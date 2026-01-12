@@ -8,12 +8,5 @@
     "manufacturer": "Classa Music",
     "isInstrument": true,
     
-    "source": "src/CINTA.cmajor",
-    
-    "view": {
-        "src": "ui/index-vintage.html",
-        "width": 900,
-        "height": 500,
-        "resizable": true
-    }
+    "source": "src/CINTA.cmajor"
 }
