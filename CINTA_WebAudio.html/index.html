@@ -19,17 +19,26 @@
 
     <div class="synth-container size-compact" id="synth-container" style="display: none;">
         
-        <div class="size-toggle-container">
+        <div class="header-controls">
+            <button class="midi-selector-btn" id="midiSelectorBtn">
+                <span>🎹 MIDI</span>
+            </button>
+            <div class="midi-dropdown" id="midiDropdown" style="display: none;">
+                <div class="midi-device-list" id="midiDeviceList">
+                    <div class="midi-device">No MIDI devices</div>
+                </div>
+            </div>
+            
             <button class="size-toggle-btn" id="sizeToggleBtn">
                 <span id="currentSizeLabel">COMPACT</span>
             </button>
             <div class="size-dropdown" id="sizeDropdown">
                 <div class="size-option" data-size="full">
-                    <span>FULL <span class="dimensions">(1400x850)</span></span>
+                    <span>FULL <span class="dimensions">(1400x700)</span></span>
                     <span class="shortcut">Ctrl+1</span>
                 </div>
                 <div class="size-option" data-size="compact">
-                    <span>COMPACT <span class="dimensions">(900x500)</span></span>
+                    <span>COMPACT <span class="dimensions">(900x600)</span></span>
                     <span class="shortcut">Ctrl+2</span>
                 </div>
                 <div class="size-option" data-size="mini">
@@ -63,12 +72,42 @@
                 <button class="preset-btn prev">◀</button>
                 <select id="preset-select">
                     <option>Init</option>
-                    <option>Reggaeton Bell</option>
-                    <option>Warm Rhodes</option>
-                    <option>Tape Strings</option>
-                    <option>Analog Bass</option>
-                    <option>Bad Bunny Bell</option>
-                    <option>Tainy Atmosphere</option>
+                    <optgroup label="Bells & Leads (13)">
+                        <option>Reggaeton Bell</option>
+                        <option>Bad Bunny Bell</option>
+                        <option>Crystal Lead</option>
+                        <option>Trap Bell</option>
+                        <option>Lo-fi Lead</option>
+                        <option>Bright Synth Lead</option>
+                        <option>Ozuna Bell</option>
+                        <option>Metallic Bell</option>
+                        <option>Soft Bell</option>
+                        <option>Vintage Lead</option>
+                        <option>Icy Bell</option>
+                        <option>Synth Stab</option>
+                    </optgroup>
+                    <optgroup label="Pads & Atmospheres (7)">
+                        <option>Tainy Atmosphere</option>
+                        <option>Tape Strings</option>
+                        <option>Ethereal Pad</option>
+                        <option>Warm Pad</option>
+                        <option>Dark Pad</option>
+                        <option>Ambient Wash</option>
+                    </optgroup>
+                    <optgroup label="Bass (3)">
+                        <option>Analog Bass</option>
+                        <option>Sub Bass</option>
+                        <option>Trap 808</option>
+                    </optgroup>
+                    <optgroup label="Keys & Plucks (3)">
+                        <option>Warm Rhodes</option>
+                        <option>Pluck Synth</option>
+                        <option>Marimba</option>
+                    </optgroup>
+                    <optgroup label="FX & Textures (2)">
+                        <option>Radio Noise</option>
+                        <option>Vinyl Crackle</option>
+                    </optgroup>
                 </select>
                 <button class="preset-btn next">▶</button>
                 <button class="preset-btn save">SAVE</button>
@@ -219,7 +258,7 @@
                 </div>
                 <div class="engine-controls">
                     <div class="knob-group">
-                        <select class="sound-select" data-param="analog_wave">
+                        <select class="sound-select" data-param="analog_osc1_wave">
                             <option value="0">Saw</option>
                             <option value="1">Square</option>
                             <option value="2">Pulse</option>
@@ -234,13 +273,13 @@
                         <label>Detune</label>
                     </div>
                     <div class="knob-group">
-                        <div class="knob" data-param="analog_filter" data-min="20" data-max="20000" data-value="8000">
+                        <div class="knob" data-param="analog_filter_cutoff" data-min="20" data-max="20000" data-value="8000">
                             <div class="knob-pointer"></div>
                         </div>
                         <label>Filter</label>
                     </div>
                     <div class="knob-group">
-                        <div class="knob" data-param="analog_resonance" data-min="0" data-max="1" data-value="0.2">
+                        <div class="knob" data-param="analog_filter_reso" data-min="0" data-max="1" data-value="0.2">
                             <div class="knob-pointer"></div>
                         </div>
                         <label>Reso</label>
@@ -261,16 +300,16 @@
                 
                 <div class="texture-slot">
                     <div class="led-indicator"></div>
-                    <button class="toggle-btn small" data-param="tape_age_on">OFF</button>
+                    <button class="toggle-btn small" data-param="tape_age" style="display:none;">OFF</button>
                     <span class="texture-name">TAPE AGE</span>
-                    <div class="knob small" data-param="tape_age_amount" data-min="0" data-max="1" data-value="0.3">
+                    <div class="knob small" data-param="tape_age" data-min="0" data-max="1" data-value="0.3">
                         <div class="knob-pointer"></div>
                     </div>
                 </div>
                 
                 <div class="texture-slot">
                     <div class="led-indicator"></div>
-                    <button class="toggle-btn small" data-param="vinyl_on">OFF</button>
+                    <button class="toggle-btn small" data-param="vinyl_amount" style="display:none;">OFF</button>
                     <span class="texture-name">VINYL</span>
                     <div class="knob small" data-param="vinyl_amount" data-min="0" data-max="1" data-value="0.3">
                         <div class="knob-pointer"></div>
@@ -279,25 +318,25 @@
                 
                 <div class="texture-slot">
                     <div class="led-indicator"></div>
-                    <button class="toggle-btn small" data-param="tube_on">OFF</button>
+                    <button class="toggle-btn small" data-param="tube_drive" style="display:none;">OFF</button>
                     <span class="texture-name">TUBE</span>
-                    <div class="knob small" data-param="tube_amount" data-min="0" data-max="1" data-value="0.3">
+                    <div class="knob small" data-param="tube_drive" data-min="0" data-max="1" data-value="0.3">
                         <div class="knob-pointer"></div>
                     </div>
                 </div>
                 
                 <div class="texture-slot">
                     <div class="led-indicator"></div>
-                    <button class="toggle-btn small" data-param="room_on">OFF</button>
+                    <button class="toggle-btn small" data-param="room_size" style="display:none;">OFF</button>
                     <span class="texture-name">ROOM</span>
-                    <div class="knob small" data-param="room_amount" data-min="0" data-max="1" data-value="0.3">
+                    <div class="knob small" data-param="room_size" data-min="0" data-max="1" data-value="0.3">
                         <div class="knob-pointer"></div>
                     </div>
                 </div>
                 
                 <div class="texture-slot">
                     <div class="led-indicator"></div>
-                    <button class="toggle-btn small" data-param="crush_on">OFF</button>
+                    <button class="toggle-btn small" data-param="crush_bits" style="display:none;">OFF</button>
                     <span class="texture-name">CRUSH</span>
                     <div class="knob small" data-param="crush_bits" data-min="4" data-max="16" data-value="12">
                         <div class="knob-pointer"></div>
@@ -319,7 +358,7 @@
             <div class="arp-selectors">
                 <div class="selector-group">
                     <label>MELODY</label>
-                    <select data-param="arp_melody">
+                    <select data-param="arp_pattern">
                         <option value="0">Dákiti Style</option>
                         <option value="1">Callaíta Style</option>
                         <option value="2">Tusa Style</option>
@@ -335,7 +374,7 @@
                 
                 <div class="selector-group">
                     <label>RHYTHM</label>
-                    <select data-param="arp_rhythm">
+                    <select data-param="arp_pattern">
                         <option value="0">Classic Dembow</option>
                         <option value="1">Modern Dembow</option>
                         <option value="2">Half-Time Dembow</option>
@@ -351,7 +390,7 @@
                 
                 <div class="selector-group">
                     <label>SCALE</label>
-                    <select data-param="arp_scale">
+                    <select data-param="arp_pattern">
                         <option value="0">Reggaeton Minor</option>
                         <option value="1">Reggaeton Major</option>
                         <option value="2">Trap Minor</option>
@@ -406,7 +445,7 @@
                 
                 <div class="selector-group">
                     <label>MODE</label>
-                    <select data-param="arp_mode">
+                    <select data-param="arp_pattern">
                         <option value="0">HITMAKER</option>
                         <option value="1">VIBRAS</option>
                         <option value="2">EMOCIONES</option>
@@ -480,7 +519,7 @@
                         <label>S</label>
                     </div>
                     <div class="knob-group">
-                        <div class="knob small" data-param="amp_release" data-min="0.001" data-max="10" data-value="0.3">
+                        <div class="knob small" data-param="amp_release" data-min="0.001" data-max="5" data-value="0.3">
                             <div class="knob-pointer"></div>
                         </div>
                         <label>R</label>
@@ -524,6 +563,84 @@
     </div>
     
     <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            min-height: 100vh;
+            background: #1a1410;
+        }
+        
+        .header-controls {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .midi-selector-btn {
+            background: linear-gradient(135deg, #6b5644 0%, #5a4a3a 100%);
+            border: 2px solid #5a4a3a;
+            border-radius: 6px;
+            padding: 8px 16px;
+            color: #f5f0e6;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 
+                0 2px 4px rgba(0,0,0,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.2s ease;
+        }
+        
+        .midi-selector-btn:hover {
+            background: linear-gradient(135deg, #7b6654 0%, #6a5a4a 100%);
+            transform: translateY(-1px);
+        }
+        
+        .midi-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 120px;
+            margin-top: 8px;
+            background: linear-gradient(135deg, #3a3028 0%, #2a2018 100%);
+            border: 2px solid #5a4a3a;
+            border-radius: 6px;
+            padding: 8px;
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+        }
+        
+        .midi-device-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .midi-device {
+            padding: 8px 12px;
+            color: #f5f0e6;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10px;
+            background: rgba(139, 115, 85, 0.2);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .midi-device:hover {
+            background: rgba(139, 115, 85, 0.4);
+        }
+        
+        .midi-device.active {
+            background: rgba(255, 215, 0, 0.3);
+            color: #ffd700;
+        }
+        
         #cmaj-overlay {
             position: fixed;
             top: 0;
@@ -551,13 +668,34 @@
             gap: 1rem;
         }
         
+        .synth-container {
+            margin: 20px auto 140px auto;
+            position: relative;
+        }
+        
         .cmaj-piano-keyboard {
             width: 100%;
             height: 5rem;
             margin-top: 1rem;
         }
+        
+        #cmaj-keyboard-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 120px;
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 2px solid #5a4a3a;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+        }
     </style>
     
+    <script src="presets.js"></script>
     <script type="module">
         import * as patch from "./cmaj_CINTA.js"
         import PianoKeyboard from "./cmaj_api/cmaj-piano-keyboard.js"
@@ -569,42 +707,236 @@
         let keyboard = null;
         
         function getMIDIInputEndpointID(connection) {
-            for (const i of connection.inputEndpoints)
-                if (i.purpose === "midi in")
+            console.log('Looking for MIDI input endpoint...');
+            console.log('Available input endpoints:', connection.inputEndpoints);
+            
+            // Look for noteOn endpoint since purpose is undefined
+            for (const i of connection.inputEndpoints) {
+                if (i.endpointID === "noteOn") {
+                    console.log('✅ Found noteOn endpoint for MIDI input');
                     return i.endpointID;
+                }
+            }
+            console.warn('No noteOn endpoint found!');
+            return null;
         }
         
         function createPianoKeyboard(connection) {
             const midiInputEndpointID = getMIDIInputEndpointID(connection);
             
+            console.log('MIDI input endpoint ID:', midiInputEndpointID);
+            
             if (midiInputEndpointID) {
                 const container = document.getElementById("cmaj-keyboard-container");
+                console.log('Keyboard container:', container);
                 keyboard = new PianoKeyboard();
+                keyboard.style.width = '100%';
+                keyboard.style.height = '100px';
                 container.appendChild(keyboard);
                 keyboard.attachToPatchConnection(connection, midiInputEndpointID);
+                console.log('✅ Piano keyboard created and attached');
+            } else {
+                console.warn('⚠️ Cannot create piano keyboard - no MIDI endpoint');
             }
         }
+        
+        // Add computer keyboard support (ASDF keys)
+        function setupComputerKeyboard() {
+            const keyMap = {
+                'a': 60, 'w': 61, 's': 62, 'e': 63, 'd': 64, 'f': 65, 't': 66, 'g': 67,
+                'y': 68, 'h': 69, 'u': 70, 'j': 71, 'k': 72, 'o': 73, 'l': 74, 'p': 75
+            };
+            
+            const activeNotes = new Set();
+            
+            document.addEventListener('keydown', (e) => {
+                if (e.repeat) return;
+                const key = e.key.toLowerCase();
+                if (keyMap[key] && !activeNotes.has(key)) {
+                    activeNotes.add(key);
+                    const note = keyMap[key];
+                    console.log('🎹 Computer key pressed:', key, 'Note:', note);
+                    
+                    // Use same format as testNote
+                    patchConnection?.sendEventOrValue('noteOn', { pitch: note, velocity: 1.0 });
+                    console.log('Sent noteOn:', note);
+                }
+            });
+            
+            document.addEventListener('keyup', (e) => {
+                const key = e.key.toLowerCase();
+                if (keyMap[key] && activeNotes.has(key)) {
+                    activeNotes.delete(key);
+                    const note = keyMap[key];
+                    patchConnection?.sendEventOrValue('noteOff', { pitch: note, velocity: 0.0 });
+                    console.log('Sent noteOff:', note);
+                }
+            });
+            
+            // Add Escape key for panic/all-notes-off
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    console.log('🚨 PANIC: All Notes Off');
+                    for (let note = 0; note < 128; note++) {
+                        patchConnection?.sendEventOrValue('noteOff', { pitch: note });
+                    }
+                    activeNotes.clear();
+                }
+            });
+            
+            console.log('✅ Computer keyboard enabled (A,S,D,F,G,H,J,K,L keys)');
+        }
+        
+        // Test function to manually send a note
+        window.testNote = function() {
+            if (patchConnection) {
+                console.log('🎵 Testing note C4 (MIDI 60)...');
+                console.log('Turning on FM engine...');
+                patchConnection.sendEventOrValue('fm_on', 1.0);
+                patchConnection.sendEventOrValue('fm_level', 0.8);
+                patchConnection.sendEventOrValue('master_volume', 0.8);
+                
+                setTimeout(() => {
+                    console.log('Sending noteOn with format: { pitch, velocity }');
+                    try {
+                        patchConnection.sendEventOrValue('noteOn', { pitch: 60, velocity: 1.0 });
+                        console.log('✅ NoteOn sent');
+                    } catch (e) {
+                        console.error('❌ NoteOn failed:', e);
+                    }
+                    
+                    setTimeout(() => {
+                        console.log('Sending noteOff...');
+                        try {
+                            patchConnection.sendEventOrValue('noteOff', { pitch: 60, velocity: 0.0 });
+                            console.log('✅ NoteOff sent');
+                        } catch (e) {
+                            console.error('❌ NoteOff failed:', e);
+                        }
+                    }, 500);
+                }, 100);
+            }
+        };
+        
+        // Debug function to check patch status
+        window.debugPatch = function() {
+            console.log('=== CINTA Debug Info ===');
+            console.log('Audio Context:', audioContext);
+            console.log('Audio Context State:', audioContext?.state);
+            console.log('Patch Connection:', patchConnection);
+            console.log('Input Endpoints:', patchConnection?.inputEndpoints);
+            console.log('Output Endpoints:', patchConnection?.outputEndpoints);
+            console.log('Manifest:', patchConnection?.manifest);
+        };
         
         async function loadPatch() {
             audioContext = new AudioContext();
             audioContext.suspend();
             patchConnection = await patch.createAudioWorkletNodePatchConnection(audioContext, "cmaj-worklet-processor");
             
+            console.log('Patch connection created:', patchConnection);
+            console.log('Audio worklet node:', patchConnection.audioNode);
+            
             const startOverlay = document.getElementById("cmaj-overlay");
             const synthContainer = document.getElementById("synth-container");
             
             startOverlay.onclick = async () => {
+                console.log('🎵 Starting CINTA...');
                 startOverlay.style.display = "none";
                 synthContainer.style.display = "block";
                 
-                patchConnection.connectDefaultAudioAndMIDI(audioContext);
+                console.log('🔌 Connecting audio and MIDI...');
+                
+                // Request MIDI access explicitly
+                try {
+                    const midiAccess = await navigator.requestMIDIAccess();
+                    console.log('MIDI Access granted:', midiAccess);
+                    console.log('MIDI Inputs:', Array.from(midiAccess.inputs.values()).map(i => i.name));
+                    
+                    // Populate MIDI device list
+                    const midiDeviceList = document.getElementById('midiDeviceList');
+                    midiDeviceList.innerHTML = '';
+                    
+                    if (midiAccess.inputs.size === 0) {
+                        midiDeviceList.innerHTML = '<div class="midi-device">No MIDI devices connected</div>';
+                    } else {
+                        for (const input of midiAccess.inputs.values()) {
+                            const deviceDiv = document.createElement('div');
+                            deviceDiv.className = 'midi-device active';
+                            deviceDiv.textContent = `✓ ${input.name}`;
+                            midiDeviceList.appendChild(deviceDiv);
+                        }
+                    }
+                    
+                    // Setup MIDI selector button
+                    const midiBtn = document.getElementById('midiSelectorBtn');
+                    const midiDropdown = document.getElementById('midiDropdown');
+                    midiBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        midiDropdown.style.display = midiDropdown.style.display === 'none' ? 'block' : 'none';
+                    });
+                    
+                    document.addEventListener('click', (e) => {
+                        if (!midiDropdown.contains(e.target) && e.target !== midiBtn) {
+                            midiDropdown.style.display = 'none';
+                        }
+                    });
+                    
+                    // Connect MIDI inputs to the patch
+                    for (const input of midiAccess.inputs.values()) {
+                        console.log('Connecting MIDI input:', input.name);
+                        input.onmidimessage = (message) => {
+                            const [status, note, velocity] = message.data;
+                            const command = status & 0xF0;
+                            
+                            if (command === 0x90 && velocity > 0) {
+                                // Note On
+                                patchConnection.sendEventOrValue('noteOn', { pitch: note, velocity: velocity / 127.0 });
+                            } else if (command === 0x80 || (command === 0x90 && velocity === 0)) {
+                                // Note Off
+                                patchConnection.sendEventOrValue('noteOff', { pitch: note, velocity: 0.0 });
+                            }
+                        };
+                    }
+                } catch (e) {
+                    console.warn('MIDI access denied or not available:', e);
+                }
+                
+                await patchConnection.connectDefaultAudioAndMIDI(audioContext);
+                console.log('Audio outputs:', patchConnection.outputEndpoints);
+                
+                console.log('▶️ Resuming audio context...');
                 await audioContext.resume();
+                console.log('Audio context state:', audioContext.state);
+                console.log('Audio destination:', audioContext.destination);
+                
+                // Enable FM engine IMMEDIATELY for sound
+                console.log('🎛️ Enabling FM engine for immediate playback...');
+                patchConnection.sendEventOrValue('fm_on', 1.0);
+                patchConnection.sendEventOrValue('fm_level', 0.8);
+                patchConnection.sendEventOrValue('master_volume', 0.8);
+                console.log('✅ FM engine enabled');
+                
+                // Verify connection
+                setTimeout(() => {
+                    console.log('=== Connection Status ===');
+                    console.log('Patch connected:', !!patchConnection);
+                    console.log('Audio context running:', audioContext.state === 'running');
+                    console.log('FM engine: ENABLED');
+                }, 1000);
                 
                 if (patchConnection?.manifest?.isInstrument) {
+                    console.log('🎹 Creating piano keyboard...');
                     createPianoKeyboard(patchConnection);
                 }
                 
+                console.log('⌨️ Setting up computer keyboard...');
+                setupComputerKeyboard();
+                
+                console.log('🎨 Initializing vintage UI...');
                 initializeVintageUI();
+                
+                console.log('✅ CINTA ready!');
             };
             
             document.getElementById("cmaj-click-to-start").style.opacity = 1.0;
@@ -615,6 +947,13 @@
             
             const sizeManagerScript = document.createElement('script');
             sizeManagerScript.src = 'size-manager.js';
+            sizeManagerScript.onload = () => {
+                // Manually trigger size manager initialization since DOMContentLoaded already fired
+                if (typeof SizeManager !== 'undefined') {
+                    window.cintaSizeManager = new SizeManager();
+                    console.log('✅ Size Manager initialized');
+                }
+            };
             document.body.appendChild(sizeManagerScript);
             
             const mainVintageScript = document.createElement('script');

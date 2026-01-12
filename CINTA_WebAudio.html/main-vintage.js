@@ -80,7 +80,7 @@ class Knob {
     sendToEngine() {
         if (patchConnection) {
             try {
-                patchConnection.sendParameterValue(this.param, this.value);
+                patchConnection.sendEventOrValue(this.param, this.value);
             } catch (error) {
                 console.error(`Failed to send ${this.param}:`, error);
             }
@@ -148,7 +148,7 @@ class ToggleButton {
         if (patchConnection) {
             try {
                 const value = this.isActive ? 1.0 : 0.0;
-                patchConnection.sendParameterValue(this.param, value);
+                patchConnection.sendEventOrValue(this.param, value);
             } catch (error) {
                 console.error(`Failed to send ${this.param}:`, error);
             }
@@ -215,7 +215,7 @@ function initializeKeySelector() {
             if (patchConnection) {
                 try {
                     const key = parseInt(button.dataset.key);
-                    patchConnection.sendParameterValue('arp_key', key);
+                    patchConnection.sendEventOrValue('arp_key', key);
                 } catch (error) {
                     console.error('Failed to send arp_key:', error);
                 }
@@ -243,7 +243,7 @@ function initializeVariationButtons() {
             
             if (patchConnection) {
                 try {
-                    patchConnection.sendParameterValue('arp_variation', parseFloat(variation));
+                    patchConnection.sendEventOrValue('arp_variation', parseFloat(variation));
                 } catch (error) {
                     console.error('Failed to send arp_variation:', error);
                 }
@@ -279,7 +279,7 @@ function initializeRandomizeButton() {
             
             if (patchConnection) {
                 try {
-                    patchConnection.sendParameterValue('arp_randomize', 1.0);
+                    patchConnection.sendEventOrValue('arp_randomize', 1.0);
                 } catch (error) {
                     console.error('Failed to send arp_randomize:', error);
                 }
@@ -292,6 +292,69 @@ function initializeRandomizeButton() {
 // PRESET BROWSER
 // ═══════════════════════════════════════════════════════════════
 
+function loadPreset(presetName) {
+    if (!window.CINTA_PRESETS || !window.CINTA_PRESETS[presetName]) {
+        console.warn('Preset not found:', presetName);
+        return;
+    }
+    
+    const preset = window.CINTA_PRESETS[presetName];
+    console.log('Loading preset:', presetName, preset.category);
+    
+    // Send all-notes-off to stop any stuck notes
+    if (patchConnection) {
+        for (let note = 0; note < 128; note++) {
+            try {
+                patchConnection.sendMIDIInputEvent('noteOff', { pitch: note });
+            } catch (e) {
+                // Ignore errors
+            }
+        }
+    }
+    
+    // Apply all preset parameters
+    for (const [param, value] of Object.entries(preset)) {
+        if (param === 'category') continue;
+        
+        try {
+            patchConnection.sendEventOrValue(param, value);
+            
+            // Update UI knobs
+            const knob = document.querySelector(`[data-param="${param}"]`);
+            if (knob && knob.classList.contains('knob')) {
+                knob.dataset.value = value;
+                const knobInstance = knob.knobInstance;
+                if (knobInstance) {
+                    knobInstance.value = value;
+                    knobInstance.updateRotation();
+                }
+            }
+            
+            // Update UI toggles
+            if (knob && knob.classList.contains('toggle-btn')) {
+                const isOn = value > 0.5;
+                if (isOn) {
+                    knob.classList.add('active');
+                    knob.textContent = 'ON';
+                } else {
+                    knob.classList.remove('active');
+                    knob.textContent = 'OFF';
+                }
+            }
+            
+            // Update UI selects
+            const select = document.querySelector(`select[data-param="${param}"]`);
+            if (select) {
+                select.value = value;
+            }
+        } catch (e) {
+            // Silently skip parameters that don't exist
+        }
+    }
+    
+    console.log('✅ Preset loaded:', presetName);
+}
+
 function initializePresetBrowser() {
     const presetSelect = document.getElementById('preset-select');
     const prevBtn = document.querySelector('.preset-btn.prev');
@@ -300,7 +363,9 @@ function initializePresetBrowser() {
     
     if (presetSelect) {
         presetSelect.addEventListener('change', () => {
-            console.log('Preset changed:', presetSelect.value);
+            const presetName = presetSelect.value;
+            console.log('Preset changed:', presetName);
+            loadPreset(presetName);
         });
     }
     
@@ -356,7 +421,7 @@ function initializeUI() {
             if (patchConnection) {
                 try {
                     const value = parseFloat(select.value);
-                    patchConnection.sendParameterValue(select.dataset.param, value);
+                    patchConnection.sendEventOrValue(select.dataset.param, value);
                 } catch (error) {
                     console.error(`Failed to send ${select.dataset.param}:`, error);
                 }
@@ -372,13 +437,19 @@ function initializeUI() {
     if (patchConnection) {
         console.log('✅ CINTA: Connected to Cmajor patch');
         
+        // Enable FM engine by default for immediate sound
+        console.log('CINTA: Enabling FM engine...');
+        patchConnection.sendEventOrValue('fm_on', 1.0);
+        patchConnection.sendEventOrValue('fm_level', 0.7);
+        patchConnection.sendEventOrValue('master_volume', 0.8);
+        
         console.log('CINTA: Sending initial parameter values...');
         knobs.forEach(knobElement => {
             const param = knobElement.dataset.param;
             const value = parseFloat(knobElement.dataset.value);
             if (param) {
                 try {
-                    patchConnection.sendParameterValue(param, value);
+                    patchConnection.sendEventOrValue(param, value);
                 } catch (e) {
                     console.warn(`Could not send ${param}`);
                 }
@@ -390,7 +461,7 @@ function initializeUI() {
             const isActive = buttonElement.classList.contains('active');
             if (param) {
                 try {
-                    patchConnection.sendParameterValue(param, isActive ? 1.0 : 0.0);
+                    patchConnection.sendEventOrValue(param, isActive ? 1.0 : 0.0);
                 } catch (e) {
                     console.warn(`Could not send ${param}`);
                 }
@@ -402,7 +473,7 @@ function initializeUI() {
             const value = parseFloat(select.value);
             if (param) {
                 try {
-                    patchConnection.sendParameterValue(param, value);
+                    patchConnection.sendEventOrValue(param, value);
                 } catch (e) {
                     console.warn(`Could not send ${param}`);
                 }
