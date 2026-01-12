@@ -6,9 +6,38 @@
     <title>CINTA - Vintage Texture Machine</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles-vintage.css">
+    <link rel="stylesheet" href="size-modes.css">
 </head>
 <body>
-    <div class="synth-container">
+    <div class="synth-container size-full">
+        
+        <!-- SIZE TOGGLE BUTTON -->
+        <div class="size-toggle-container">
+            <button class="size-toggle-btn" id="sizeToggleBtn">
+                <span id="currentSizeLabel">FULL</span>
+            </button>
+            <div class="size-dropdown" id="sizeDropdown">
+                <div class="size-option" data-size="full">
+                    <span>FULL <span class="dimensions">(1400x850)</span></span>
+                    <span class="shortcut">Ctrl+1</span>
+                </div>
+                <div class="size-option" data-size="compact">
+                    <span>COMPACT <span class="dimensions">(900x500)</span></span>
+                    <span class="shortcut">Ctrl+2</span>
+                </div>
+                <div class="size-option" data-size="mini">
+                    <span>MINI <span class="dimensions">(500x300)</span></span>
+                    <span class="shortcut">Ctrl+3</span>
+                </div>
+                <div class="size-option" data-size="strip">
+                    <span>STRIP <span class="dimensions">(300x150)</span></span>
+                    <span class="shortcut">Ctrl+4</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SIZE CHANGE INDICATOR -->
+        <div class="size-indicator" id="sizeIndicator"></div>
         
         <!-- HEADER WITH VINTAGE BADGE -->
         <header class="header">
@@ -496,6 +525,7 @@
         
     </div>
     
+    <script src="size-manager.js"></script>
     <script src="main-vintage.js"></script>
 </body>
 </html>

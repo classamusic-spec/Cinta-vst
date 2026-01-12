@@ -1,0 +1,17 @@
+# Commands to Push CINTA to GitHub
+
+# Step 1: Create repository on GitHub
+# Go to: https://github.com/new
+# Name: Cinta-vst
+# DO NOT initialize with README
+
+# Step 2: Add remote (replace YOUR_USERNAME with your GitHub username)
+git remote add origin https://github.com/YOUR_USERNAME/Cinta-vst.git
+
+# Step 3: Push to GitHub
+git push -u origin main
+
+# You'll be prompted to authenticate - use browser login or Personal Access Token
+
+# After successful push, view your repository at:
+# https://github.com/YOUR_USERNAME/Cinta-vst

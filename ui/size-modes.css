@@ -1,0 +1,425 @@
+/* ═══════════════════════════════════════════════════════════════
+   CINTA UI SIZE MODES
+   4 responsive layouts with smooth transitions
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════════════
+   SIZE MODE TOGGLE BUTTON
+   ═══════════════════════════════════════════════════════════════ */
+
+.size-toggle-container {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 1000;
+}
+
+.size-toggle-btn {
+    background: linear-gradient(135deg, #8b7355 0%, #6b5644 100%);
+    border: 2px solid #5a4a3a;
+    border-radius: 6px;
+    padding: 8px 16px;
+    color: #f5f0e6;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 
+        0 2px 4px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.size-toggle-btn:hover {
+    background: linear-gradient(135deg, #9b8365 0%, #7b6654 100%);
+    transform: translateY(-1px);
+    box-shadow: 
+        0 4px 8px rgba(0,0,0,0.4),
+        inset 0 1px 0 rgba(255,255,255,0.15);
+}
+
+.size-toggle-btn:active {
+    transform: translateY(0);
+    box-shadow: 
+        0 1px 2px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.size-toggle-btn::before {
+    content: '⊞';
+    font-size: 14px;
+}
+
+.size-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: linear-gradient(135deg, #3a3028 0%, #2a2018 100%);
+    border: 2px solid #5a4a3a;
+    border-radius: 6px;
+    padding: 8px 0;
+    min-width: 200px;
+    box-shadow: 
+        0 8px 16px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.size-dropdown.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.size-option {
+    padding: 10px 16px;
+    color: #f5f0e6;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.size-option:hover {
+    background: rgba(139, 115, 85, 0.3);
+}
+
+.size-option.active {
+    background: rgba(139, 115, 85, 0.5);
+    color: #ffd700;
+}
+
+.size-option .shortcut {
+    font-size: 9px;
+    opacity: 0.6;
+    margin-left: 12px;
+}
+
+.size-option .dimensions {
+    font-size: 9px;
+    opacity: 0.5;
+    margin-left: 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODE 1: FULL (1400x850) - Everything visible
+   ═══════════════════════════════════════════════════════════════ */
+
+.synth-container.size-full {
+    width: 1400px;
+    height: 850px;
+}
+
+.size-full .engine-section,
+.size-full .texture-section,
+.size-full .arp-section,
+.size-full .envelope-section,
+.size-full .lfo-section,
+.size-full .master-section,
+.size-full .preset-browser {
+    display: block;
+    opacity: 1;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODE 2: COMPACT (900x500) - Engines + Macros + Arp pattern
+   ═══════════════════════════════════════════════════════════════ */
+
+.synth-container.size-compact {
+    width: 900px;
+    height: 500px;
+    padding: 20px;
+}
+
+.size-compact .header {
+    margin-bottom: 15px;
+}
+
+.size-compact .vintage-badge {
+    transform: scale(0.8);
+    transform-origin: left center;
+}
+
+.size-compact .vu-meter {
+    transform: scale(0.7);
+}
+
+.size-compact .tape-deck {
+    display: none;
+}
+
+/* Show only essential sections */
+.size-compact .engine-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.size-compact .engine-panel {
+    padding: 12px;
+}
+
+.size-compact .engine-panel h3 {
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+.size-compact .knob-group {
+    display: none; /* Hide detailed knobs */
+}
+
+.size-compact .engine-toggle {
+    display: block;
+    margin: 8px auto;
+}
+
+/* Show macro controls */
+.size-compact .master-section {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.size-compact .master-section .knob {
+    transform: scale(0.8);
+}
+
+/* Show arp pattern display */
+.size-compact .arp-section {
+    display: block;
+}
+
+.size-compact .arp-pattern-display {
+    display: grid;
+}
+
+.size-compact .arp-controls {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+/* Hide detailed sections */
+.size-compact .texture-section,
+.size-compact .envelope-section,
+.size-compact .lfo-section,
+.size-compact .preset-browser {
+    display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODE 3: MINI (500x300) - Just macros, engine toggles, master
+   ═══════════════════════════════════════════════════════════════ */
+
+.synth-container.size-mini {
+    width: 500px;
+    height: 300px;
+    padding: 15px;
+}
+
+.size-mini .header {
+    margin-bottom: 10px;
+}
+
+.size-mini .vintage-badge {
+    transform: scale(0.6);
+    transform-origin: left center;
+}
+
+.size-mini .vu-meter,
+.size-mini .tape-deck {
+    display: none;
+}
+
+/* Minimal engine section - just toggles */
+.size-mini .engine-section {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    justify-content: center;
+}
+
+.size-mini .engine-panel {
+    padding: 8px 12px;
+    min-width: auto;
+}
+
+.size-mini .engine-panel h3 {
+    font-size: 10px;
+    margin-bottom: 6px;
+}
+
+.size-mini .knob-group,
+.size-mini .arp-pattern-display,
+.size-mini .arp-controls {
+    display: none;
+}
+
+.size-mini .engine-toggle {
+    display: block;
+    margin: 0 auto;
+    transform: scale(0.9);
+}
+
+/* Compact master section */
+.size-mini .master-section {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+}
+
+.size-mini .master-section .knob {
+    transform: scale(0.7);
+}
+
+.size-mini .master-section h3 {
+    font-size: 10px;
+}
+
+/* Hide everything else */
+.size-mini .texture-section,
+.size-mini .envelope-section,
+.size-mini .lfo-section,
+.size-mini .arp-section,
+.size-mini .preset-browser {
+    display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODE 4: STRIP (300x150) - Vibe, Master, Arp toggle only
+   ═══════════════════════════════════════════════════════════════ */
+
+.synth-container.size-strip {
+    width: 300px;
+    height: 150px;
+    padding: 10px;
+}
+
+.size-strip .header {
+    display: none;
+}
+
+/* Ultra minimal - just essential controls */
+.size-strip .master-section {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.size-strip .master-section h3 {
+    display: none;
+}
+
+.size-strip .master-section .knob {
+    transform: scale(0.6);
+}
+
+/* Show only Vibe and Master Volume */
+.size-strip .master-section > *:not(:nth-child(1)):not(:nth-child(6)) {
+    display: none;
+}
+
+/* Arp toggle */
+.size-strip .arp-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 12px;
+}
+
+.size-strip .arp-section > *:not(.toggle-button) {
+    display: none;
+}
+
+.size-strip .arp-section .toggle-button {
+    transform: scale(0.8);
+}
+
+/* Hide everything else */
+.size-strip .engine-section,
+.size-strip .texture-section,
+.size-strip .envelope-section,
+.size-strip .lfo-section,
+.size-strip .preset-browser {
+    display: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SMOOTH TRANSITIONS
+   ═══════════════════════════════════════════════════════════════ */
+
+.synth-container * {
+    transition: 
+        opacity 0.3s ease,
+        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+        width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Fade in/out animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Size change indicator */
+.size-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #ffd700;
+    padding: 20px 40px;
+    border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    font-weight: 600;
+    z-index: 10000;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.size-indicator.show {
+    opacity: 1;
+}
+
+/* Responsive adjustments for very small screens */
+@media (max-width: 320px) {
+    .synth-container.size-strip {
+        width: 100%;
+        height: 120px;
+    }
+}

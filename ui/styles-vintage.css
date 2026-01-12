@@ -13,7 +13,7 @@ body {
     font-family: 'IBM Plex Mono', monospace;
     background: #0a0a0a;
     color: #f5f0e6;
-    overflow: hidden;
+    overflow: auto;
     user-select: none;
 }
 
@@ -27,6 +27,8 @@ body {
     margin: 20px auto;
     padding: 30px;
     position: relative;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
     
     /* Realistic wood grain texture */
     background: 
