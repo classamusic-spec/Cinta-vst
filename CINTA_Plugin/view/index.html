@@ -9,16 +9,9 @@
     <link rel="stylesheet" href="size-modes.css">
 </head>
 <body>
-    <div id="cmaj-overlay">
-        <div id="cmaj-info">
-            <span style="font-size: 2rem; font-weight: bold;">CINTA</span>
-            <span style="font-size: 1rem;">Vintage Texture Machine - 1975 Havana Studio Synth</span>
-            <span id="cmaj-click-to-start" style="margin-top: 2rem; opacity: 0;">- Click to Start -</span>
-        </div>
-    </div>
-
-    <div class="synth-container size-compact" id="synth-container" style="display: none;">
+    <div class="synth-container size-compact">
         
+        <!-- SIZE TOGGLE BUTTON -->
         <div class="size-toggle-container">
             <button class="size-toggle-btn" id="sizeToggleBtn">
                 <span id="currentSizeLabel">COMPACT</span>
@@ -43,8 +36,10 @@
             </div>
         </div>
         
+        <!-- SIZE CHANGE INDICATOR -->
         <div class="size-indicator" id="sizeIndicator"></div>
         
+        <!-- HEADER WITH VINTAGE BADGE -->
         <header class="header">
             <div class="logo">
                 <div class="logo-badge">
@@ -108,6 +103,7 @@
             </div>
         </header>
 
+        <!-- REEL-TO-REEL TAPE DECK -->
         <div class="tape-deck" id="tape-deck">
             <div class="reel left-reel">
                 <div class="reel-hub"></div>
@@ -126,8 +122,10 @@
             </div>
         </div>
 
+        <!-- ENGINES ROW -->
         <section class="engines-row">
             
+            <!-- FM ENGINE -->
             <div class="engine-panel" id="fm-engine">
                 <div class="engine-header">
                     <h2>FM ENGINE</h2>
@@ -169,6 +167,7 @@
                 </div>
             </div>
 
+            <!-- TAPE ENGINE -->
             <div class="engine-panel" id="tape-engine">
                 <div class="engine-header">
                     <h2>TAPE ENGINE</h2>
@@ -209,6 +208,7 @@
                 </div>
             </div>
 
+            <!-- ANALOG ENGINE -->
             <div class="engine-panel" id="analog-engine">
                 <div class="engine-header">
                     <h2>ANALOG ENGINE</h2>
@@ -255,6 +255,7 @@
             </div>
         </section>
 
+        <!-- TEXTURE RACK -->
         <section class="texture-rack">
             <h2>TEXTURE RACK</h2>
             <div class="texture-slots">
@@ -307,6 +308,7 @@
             </div>
         </section>
 
+        <!-- ARP MACHINE -->
         <section class="arp-machine">
             <div class="arp-header">
                 <h2>🎹 ARP MACHINE</h2>
@@ -457,6 +459,7 @@
             </div>
         </section>
 
+        <!-- BOTTOM CONTROLS -->
         <section class="bottom-controls">
             <div class="envelope-section">
                 <h3>ENVELOPE</h3>
@@ -491,6 +494,7 @@
             <div class="master-section">
                 <h3>MASTER OUTPUT</h3>
                 
+                <!-- VU METER -->
                 <div class="vu-meter" id="vu-meter" data-level="low">
                     <div class="vu-face">
                         <div class="vu-scale">
@@ -519,110 +523,47 @@
             </div>
         </section>
         
-        <div class="cmaj-piano-keyboard" id="cmaj-keyboard-container"></div>
-        
     </div>
     
-    <style>
-        #cmaj-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            background: rgb(0,0,0);
-            background: radial-gradient(circle, #333333ee 0%, #333333cc 100%);
-            z-index: 1000;
-            text-shadow: 0 0 0.2rem black, 0 0 0.5rem black, 0 0 1rem black, 0 0 3rem black;
-            color: white;
-            font-family: 'IBM Plex Mono', monospace;
-        }
-        
-        #cmaj-info {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .cmaj-piano-keyboard {
-            width: 100%;
-            height: 5rem;
-            margin-top: 1rem;
-        }
-    </style>
-    
     <script type="module">
-        import * as patch from "./cmaj_CINTA.js"
-        import PianoKeyboard from "./cmaj_api/cmaj-piano-keyboard.js"
-        
-        customElements.define("cmaj-panel-piano-keyboard", PianoKeyboard);
+        // Import Cmajor patch connection
+        import { PatchConnection } from "./cmaj_api/cmaj-patch-connection.js"
         
         let patchConnection = null;
-        let audioContext = null;
-        let keyboard = null;
         
-        function getMIDIInputEndpointID(connection) {
-            for (const i of connection.inputEndpoints)
-                if (i.purpose === "midi in")
-                    return i.endpointID;
-        }
-        
-        function createPianoKeyboard(connection) {
-            const midiInputEndpointID = getMIDIInputEndpointID(connection);
-            
-            if (midiInputEndpointID) {
-                const container = document.getElementById("cmaj-keyboard-container");
-                keyboard = new PianoKeyboard();
-                container.appendChild(keyboard);
-                keyboard.attachToPatchConnection(connection, midiInputEndpointID);
+        // Initialize when patch connection is available
+        async function initializeCINTA() {
+            // Wait for the patch connection to be available
+            if (window.cmajPatchConnection) {
+                patchConnection = window.cmajPatchConnection;
+            } else {
+                // Create connection if not provided
+                patchConnection = new PatchConnection();
+                await patchConnection.requestStatusUpdate();
             }
-        }
-        
-        async function loadPatch() {
-            audioContext = new AudioContext();
-            audioContext.suspend();
-            patchConnection = await patch.createAudioWorkletNodePatchConnection(audioContext, "cmaj-worklet-processor");
             
-            const startOverlay = document.getElementById("cmaj-overlay");
-            const synthContainer = document.getElementById("synth-container");
-            
-            startOverlay.onclick = async () => {
-                startOverlay.style.display = "none";
-                synthContainer.style.display = "block";
-                
-                patchConnection.connectDefaultAudioAndMIDI(audioContext);
-                await audioContext.resume();
-                
-                if (patchConnection?.manifest?.isInstrument) {
-                    createPianoKeyboard(patchConnection);
-                }
-                
-                initializeVintageUI();
-            };
-            
-            document.getElementById("cmaj-click-to-start").style.opacity = 1.0;
-        }
-        
-        function initializeVintageUI() {
+            // Make it globally available for the UI scripts
             window.patchConnection = patchConnection;
             
-            const sizeManagerScript = document.createElement('script');
-            sizeManagerScript.src = 'size-manager.js';
-            document.body.appendChild(sizeManagerScript);
+            // Load size manager
+            const sizeScript = document.createElement('script');
+            sizeScript.src = 'size-manager.js';
+            document.body.appendChild(sizeScript);
             
-            const mainVintageScript = document.createElement('script');
-            mainVintageScript.src = 'main-vintage.js';
-            document.body.appendChild(mainVintageScript);
+            // Load main vintage UI after size manager
+            sizeScript.onload = () => {
+                const mainScript = document.createElement('script');
+                mainScript.src = 'main-vintage.js';
+                document.body.appendChild(mainScript);
+            };
         }
         
-        loadPatch();
+        // Start initialization
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeCINTA);
+        } else {
+            initializeCINTA();
+        }
     </script>
 </body>
 </html>

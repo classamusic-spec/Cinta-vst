@@ -76,9 +76,15 @@ file(GLOB_RECURSE HEADERS
     include/*.h
 )
 
+file(GLOB_RECURSE VIEW_FILES
+    view/*
+    CINTA.cmajorpatch
+)
+
 target_sources(CINTA PRIVATE
     cmajor_plugin.cpp
     ${HEADERS}
+    ${VIEW_FILES}
 )
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}/" FILES ${HEADERS})
