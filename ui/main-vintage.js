@@ -80,7 +80,11 @@ class Knob {
     
     sendToEngine() {
         if (patchConnection) {
-            patchConnection.sendEventOrValue(this.param, this.value);
+            try {
+                patchConnection.sendParameterValue(this.param, this.value);
+            } catch (error) {
+                console.error(`Failed to send ${this.param}:`, error);
+            }
         }
     }
     
@@ -145,8 +149,12 @@ class ToggleButton {
     
     sendToEngine() {
         if (patchConnection) {
-            const value = this.isActive ? 1 : 0;
-            patchConnection.sendEventOrValue(this.param, value);
+            try {
+                const value = this.isActive ? 1.0 : 0.0;
+                patchConnection.sendParameterValue(this.param, value);
+            } catch (error) {
+                console.error(`Failed to send ${this.param}:`, error);
+            }
         }
     }
 }
@@ -215,8 +223,12 @@ function initializeKeySelector() {
             
             // Send to engine
             if (patchConnection) {
-                const key = parseInt(button.dataset.key);
-                patchConnection.sendEventOrValue('arp_key', key);
+                try {
+                    const key = parseInt(button.dataset.key);
+                    patchConnection.sendParameterValue('arp_key', key);
+                } catch (error) {
+                    console.error('Failed to send arp_key:', error);
+                }
             }
         });
     });
@@ -242,7 +254,11 @@ function initializeVariationButtons() {
             
             // Send to engine (implement variation logic)
             if (patchConnection) {
-                patchConnection.sendEventOrValue('arp_variation', variation);
+                try {
+                    patchConnection.sendParameterValue('arp_variation', parseFloat(variation));
+                } catch (error) {
+                    console.error('Failed to send arp_variation:', error);
+                }
             }
         });
     });
@@ -277,7 +293,11 @@ function initializeRandomizeButton() {
             
             // Send to engine
             if (patchConnection) {
-                patchConnection.sendEventOrValue('arp_randomize', 1);
+                try {
+                    patchConnection.sendParameterValue('arp_randomize', 1.0);
+                } catch (error) {
+                    console.error('Failed to send arp_randomize:', error);
+                }
             }
         });
     }
@@ -370,8 +390,12 @@ function initializeUI() {
     selects.forEach(select => {
         select.addEventListener('change', () => {
             if (patchConnection) {
-                const value = parseFloat(select.value);
-                patchConnection.sendEventOrValue(select.dataset.param, value);
+                try {
+                    const value = parseFloat(select.value);
+                    patchConnection.sendParameterValue(select.dataset.param, value);
+                } catch (error) {
+                    console.error(`Failed to send ${select.dataset.param}:`, error);
+                }
             }
         });
     });
@@ -396,50 +420,95 @@ function initializeUI() {
 // ═══════════════════════════════════════════════════════════════
 
 window.addEventListener('load', async () => {
+    console.log('CINTA: Window loaded');
     initializeUI();
     
     if (window.cmajor) {
+        console.log('CINTA: Cmajor API detected, connecting...');
         try {
             patchConnection = await window.cmajor.createPatchConnection();
             
             if (patchConnection) {
-                console.log('CINTA: Connected to Cmajor patch');
+                console.log('✅ CINTA: Connected to Cmajor patch');
+                
+                // Get available parameters
+                try {
+                    const params = await patchConnection.getParameters();
+                    console.log(`CINTA: Found ${params.length} parameters`);
+                } catch (e) {
+                    console.log('CINTA: Could not get parameter list');
+                }
                 
                 // Send initial values to engine
+                console.log('CINTA: Sending initial parameter values...');
                 const knobs = document.querySelectorAll('.knob');
                 knobs.forEach(knobElement => {
-                    const knob = new Knob(knobElement);
-                    knob.sendToEngine();
+                    const param = knobElement.dataset.param;
+                    const value = parseFloat(knobElement.dataset.value);
+                    if (param) {
+                        try {
+                            patchConnection.sendParameterValue(param, value);
+                        } catch (e) {
+                            console.warn(`Could not send ${param}`);
+                        }
+                    }
                 });
                 
                 const toggleButtons = document.querySelectorAll('.toggle-btn');
                 toggleButtons.forEach(buttonElement => {
-                    const button = new ToggleButton(buttonElement);
-                    button.sendToEngine();
+                    const param = buttonElement.dataset.param;
+                    const isActive = buttonElement.classList.contains('active');
+                    if (param) {
+                        try {
+                            patchConnection.sendParameterValue(param, isActive ? 1.0 : 0.0);
+                        } catch (e) {
+                            console.warn(`Could not send ${param}`);
+                        }
+                    }
                 });
                 
                 const selects = document.querySelectorAll('select[data-param]');
                 selects.forEach(select => {
+                    const param = select.dataset.param;
                     const value = parseFloat(select.value);
-                    patchConnection.sendEventOrValue(select.dataset.param, value);
+                    if (param) {
+                        try {
+                            patchConnection.sendParameterValue(param, value);
+                        } catch (e) {
+                            console.warn(`Could not send ${param}`);
+                        }
+                    }
                 });
                 
-                // Listen for MIDI events to animate tape deck
-                if (patchConnection.addEndpointListener) {
-                    patchConnection.addEndpointListener('midiOut', (event) => {
-                        if (event.message && event.message.type === 'noteOn') {
-                            handleMIDINote(true);
-                        } else if (event.message && event.message.type === 'noteOff') {
-                            handleMIDINote(false);
+                console.log('✅ CINTA: All initial values sent');
+                
+                // Listen for parameter changes from patch
+                if (patchConnection.addParameterListener) {
+                    patchConnection.addParameterListener((paramID, value) => {
+                        console.log(`Parameter changed: ${paramID} = ${value}`);
+                        // Update UI to reflect parameter change
+                        const knob = document.querySelector(`[data-param="${paramID}"]`);
+                        if (knob && knob.classList.contains('knob')) {
+                            const knobInstance = knob.knobInstance;
+                            if (knobInstance) {
+                                knobInstance.value = value;
+                                knobInstance.updateRotation();
+                                knobInstance.updateNixieDisplay();
+                            }
                         }
                     });
                 }
+                
+                // Start animations
+                startTapeDeck();
             }
         } catch (error) {
-            console.error('CINTA: Failed to connect to patch:', error);
+            console.error('❌ CINTA: Failed to connect to patch:', error);
+            console.log('CINTA: Falling back to standalone mode');
+            startTapeDeck();
         }
     } else {
-        console.log('CINTA: Running in standalone mode (no patch connection)');
+        console.log('CINTA: Running in standalone mode (no Cmajor API)');
         // Start demo animation
         startTapeDeck();
     }
