@@ -1,0 +1,425 @@
+graph CINTA [[ main ]]
+{
+    input event float vibe;
+    input event float warmth;
+    input event float space;
+    input event float movement;
+    input event float grit;
+    
+    input event float amp_attack;
+    input event float amp_decay;
+    input event float amp_sustain;
+    input event float amp_release;
+    
+    input event float filter_attack;
+    input event float filter_decay;
+    input event float filter_sustain;
+    input event float filter_release;
+    
+    input event float lfo_rate;
+    input event float lfo_wave;
+    input event float lfo_to_pitch;
+    input event float lfo_to_filter;
+    input event float lfo_to_amp;
+    
+    input event float master_volume;
+    input event float master_width;
+    input event float master_highcut;
+    
+    input event float voice_mode;
+    input event float voice_glide;
+    
+    input event float fm_ratio;
+    input event float fm_depth;
+    input event float fm_feedback;
+    input event float fm_carrier_wave;
+    input event float fm_mod_wave;
+    input event float fm_level;
+    input event float fm_pan;
+    input event float fm_on;
+    
+    input event float tape_sound;
+    input event float tape_speed;
+    input event float tape_wow;
+    input event float tape_flutter;
+    input event float tape_start;
+    input event float tape_level;
+    input event float tape_pan;
+    input event float tape_on;
+    
+    input event float analog_osc1_wave;
+    input event float analog_osc1_level;
+    input event float analog_osc2_wave;
+    input event float analog_osc2_level;
+    input event float analog_osc2_detune;
+    input event float analog_osc2_octave;
+    input event float analog_pulse_width;
+    input event float analog_pwm_rate;
+    input event float analog_pwm_depth;
+    input event float analog_sub_level;
+    input event float analog_noise_level;
+    input event float analog_filter_cutoff;
+    input event float analog_filter_resonance;
+    input event float analog_filter_env;
+    input event float analog_level;
+    input event float analog_pan;
+    input event float analog_on;
+    
+    input event float tape_age_on;
+    input event float tape_age_wow_rate;
+    input event float tape_age_wow_depth;
+    input event float tape_age_flutter_rate;
+    input event float tape_age_flutter_depth;
+    input event float tape_age_hiss;
+    input event float tape_age_dropout;
+    
+    input event float vinyl_on;
+    input event float vinyl_crackle;
+    input event float vinyl_dust;
+    input event float vinyl_surface;
+    input event float vinyl_warp;
+    
+    input event float radio_on;
+    input event float radio_mode;
+    input event float radio_drift;
+    input event float radio_static;
+    input event float radio_bandwidth;
+    
+    input event float room_on;
+    input event float room_size;
+    input event float room_damping;
+    input event float room_mix;
+    
+    input event float tube_on;
+    input event float tube_drive;
+    input event float tube_bias;
+    input event float tube_warmth;
+    input event float tube_output;
+    
+    input event float crush_on;
+    input event float crush_bits;
+    input event float crush_rate;
+    input event float crush_dither;
+    input event float crush_mix;
+    
+    input event float arp_on;
+    input event float arp_melody_type;
+    input event float arp_rhythm_type;
+    input event float arp_key;
+    input event float arp_scale;
+    input event float arp_rate;
+    input event float arp_swing;
+    input event float arp_gate;
+    input event float arp_octaves;
+    
+    input event (std::notes::NoteOn, std::notes::NoteOff, std::notes::PitchBend) midiIn;
+    output stream float<2> audioOut;
+    
+    node
+    {
+        arpeggiator = ArpMachine::Arpeggiator;
+        voiceAllocator = std::voices::VoiceAllocator(8);
+        
+        envelopeGen = EnvelopeGenerator;
+        lfoGen = LFOGenerator;
+        
+        fmEngine = FMEngine::FMSynth[8];
+        tapeEngine = TapeEngine::TapeSynth[8];
+        analogEngine = AnalogEngine::AnalogSynth[8];
+        
+        mixer = Mixer;
+        textureRack = TextureRack::TextureEffects;
+        masterSection = MasterSection;
+    }
+    
+    connection
+    {
+        arp_on -> arpeggiator.arp_on;
+        arp_melody_type -> arpeggiator.arp_melody_type;
+        arp_rhythm_type -> arpeggiator.arp_rhythm_type;
+        arp_key -> arpeggiator.arp_key;
+        arp_scale -> arpeggiator.arp_scale;
+        arp_rate -> arpeggiator.arp_rate;
+        arp_swing -> arpeggiator.arp_swing;
+        arp_gate -> arpeggiator.arp_gate;
+        arp_octaves -> arpeggiator.arp_octaves;
+        
+        midiIn -> arpeggiator.midiIn;
+        arpeggiator.midiOut -> voiceAllocator.eventIn;
+        
+        voiceAllocator.voiceEventOut -> fmEngine.midiIn,
+                                        tapeEngine.midiIn,
+                                        analogEngine.midiIn;
+        
+        fm_ratio -> fmEngine.fm_ratio;
+        fm_depth -> fmEngine.fm_depth;
+        fm_feedback -> fmEngine.fm_feedback;
+        fm_carrier_wave -> fmEngine.fm_carrier_wave;
+        fm_mod_wave -> fmEngine.fm_mod_wave;
+        fm_level -> fmEngine.fm_level;
+        fm_pan -> fmEngine.fm_pan;
+        fm_on -> fmEngine.fm_on;
+        
+        tape_sound -> tapeEngine.tape_sound;
+        tape_speed -> tapeEngine.tape_speed;
+        tape_wow -> tapeEngine.tape_wow;
+        tape_flutter -> tapeEngine.tape_flutter;
+        tape_start -> tapeEngine.tape_start;
+        tape_level -> tapeEngine.tape_level;
+        tape_pan -> tapeEngine.tape_pan;
+        tape_on -> tapeEngine.tape_on;
+        
+        analog_osc1_wave -> analogEngine.analog_osc1_wave;
+        analog_osc1_level -> analogEngine.analog_osc1_level;
+        analog_osc2_wave -> analogEngine.analog_osc2_wave;
+        analog_osc2_level -> analogEngine.analog_osc2_level;
+        analog_osc2_detune -> analogEngine.analog_osc2_detune;
+        analog_osc2_octave -> analogEngine.analog_osc2_octave;
+        analog_pulse_width -> analogEngine.analog_pulse_width;
+        analog_pwm_rate -> analogEngine.analog_pwm_rate;
+        analog_pwm_depth -> analogEngine.analog_pwm_depth;
+        analog_sub_level -> analogEngine.analog_sub_level;
+        analog_noise_level -> analogEngine.analog_noise_level;
+        analog_filter_cutoff -> analogEngine.analog_filter_cutoff;
+        analog_filter_resonance -> analogEngine.analog_filter_resonance;
+        analog_filter_env -> analogEngine.analog_filter_env;
+        analog_level -> analogEngine.analog_level;
+        analog_pan -> analogEngine.analog_pan;
+        analog_on -> analogEngine.analog_on;
+        
+        amp_attack -> envelopeGen.amp_attack;
+        amp_decay -> envelopeGen.amp_decay;
+        amp_sustain -> envelopeGen.amp_sustain;
+        amp_release -> envelopeGen.amp_release;
+        
+        filter_attack -> envelopeGen.filter_attack;
+        filter_decay -> envelopeGen.filter_decay;
+        filter_sustain -> envelopeGen.filter_sustain;
+        filter_release -> envelopeGen.filter_release;
+        
+        lfo_rate -> lfoGen.lfo_rate;
+        lfo_wave -> lfoGen.lfo_wave;
+        lfo_to_pitch -> lfoGen.lfo_to_pitch;
+        lfo_to_filter -> lfoGen.lfo_to_filter;
+        lfo_to_amp -> lfoGen.lfo_to_amp;
+        
+        envelopeGen.ampEnvOut -> fmEngine.ampEnv, tapeEngine.ampEnv, analogEngine.ampEnv;
+        envelopeGen.filterEnvOut -> fmEngine.filterEnv, tapeEngine.filterEnv, analogEngine.filterEnv;
+        lfoGen.lfoOut -> fmEngine.lfoOut, tapeEngine.lfoOut, analogEngine.lfoOut;
+        
+        fmEngine -> mixer.fmIn;
+        tapeEngine -> mixer.tapeIn;
+        analogEngine -> mixer.analogIn;
+        
+        mixer.audioOut -> textureRack.audioIn;
+        
+        tape_age_on -> textureRack.tape_age_on;
+        tape_age_wow_rate -> textureRack.tape_age_wow_rate;
+        tape_age_wow_depth -> textureRack.tape_age_wow_depth;
+        tape_age_flutter_rate -> textureRack.tape_age_flutter_rate;
+        tape_age_flutter_depth -> textureRack.tape_age_flutter_depth;
+        tape_age_hiss -> textureRack.tape_age_hiss;
+        tape_age_dropout -> textureRack.tape_age_dropout;
+        
+        vinyl_on -> textureRack.vinyl_on;
+        vinyl_crackle -> textureRack.vinyl_crackle;
+        vinyl_dust -> textureRack.vinyl_dust;
+        vinyl_surface -> textureRack.vinyl_surface;
+        vinyl_warp -> textureRack.vinyl_warp;
+        
+        radio_on -> textureRack.radio_on;
+        radio_mode -> textureRack.radio_mode;
+        radio_drift -> textureRack.radio_drift;
+        radio_static -> textureRack.radio_static;
+        radio_bandwidth -> textureRack.radio_bandwidth;
+        
+        room_on -> textureRack.room_on;
+        room_size -> textureRack.room_size;
+        room_damping -> textureRack.room_damping;
+        room_mix -> textureRack.room_mix;
+        
+        tube_on -> textureRack.tube_on;
+        tube_drive -> textureRack.tube_drive;
+        tube_bias -> textureRack.tube_bias;
+        tube_warmth -> textureRack.tube_warmth;
+        tube_output -> textureRack.tube_output;
+        
+        crush_on -> textureRack.crush_on;
+        crush_bits -> textureRack.crush_bits;
+        crush_rate -> textureRack.crush_rate;
+        crush_dither -> textureRack.crush_dither;
+        crush_mix -> textureRack.crush_mix;
+        
+        vibe -> masterSection.vibe;
+        warmth -> masterSection.warmth;
+        space -> masterSection.space;
+        movement -> masterSection.movement;
+        grit -> masterSection.grit;
+        
+        master_volume -> masterSection.master_volume;
+        master_width -> masterSection.master_width;
+        master_highcut -> masterSection.master_highcut;
+        
+        textureRack.audioOut -> masterSection.audioIn;
+        masterSection.audioOut -> audioOut;
+    }
+}
+
+processor EnvelopeGenerator
+{
+    input event float amp_attack;
+    input event float amp_decay;
+    input event float amp_sustain;
+    input event float amp_release;
+    
+    input event float filter_attack;
+    input event float filter_decay;
+    input event float filter_sustain;
+    input event float filter_release;
+    
+    output stream float ampEnvOut;
+    output stream float filterEnvOut;
+    
+    float ampAttack = 0.01f;
+    float ampDecay = 0.1f;
+    float ampSustain = 0.7f;
+    float ampRelease = 0.3f;
+    
+    float filterAttack = 0.01f;
+    float filterDecay = 0.2f;
+    float filterSustain = 0.5f;
+    float filterRelease = 0.5f;
+    
+    event amp_attack (float v) { ampAttack = clamp(v, 0.001f, 5.0f); }
+    event amp_decay (float v) { ampDecay = clamp(v, 0.001f, 5.0f); }
+    event amp_sustain (float v) { ampSustain = clamp(v, 0.0f, 1.0f); }
+    event amp_release (float v) { ampRelease = clamp(v, 0.001f, 10.0f); }
+    
+    event filter_attack (float v) { filterAttack = clamp(v, 0.001f, 5.0f); }
+    event filter_decay (float v) { filterDecay = clamp(v, 0.001f, 5.0f); }
+    event filter_sustain (float v) { filterSustain = clamp(v, 0.0f, 1.0f); }
+    event filter_release (float v) { filterRelease = clamp(v, 0.001f, 10.0f); }
+    
+    void main()
+    {
+        loop
+        {
+            ampEnvOut <- 1.0f;
+            filterEnvOut <- 1.0f;
+            advance();
+        }
+    }
+}
+
+processor LFOGenerator
+{
+    input event float lfo_rate;
+    input event float lfo_wave;
+    input event float lfo_to_pitch;
+    input event float lfo_to_filter;
+    input event float lfo_to_amp;
+    
+    output stream float lfoOut;
+    
+    float rate = 2.0f;
+    float wave = 0.0f;
+    float toPitch = 0.0f;
+    float toFilter = 0.0f;
+    float toAmp = 0.0f;
+    
+    float phase = 0.0f;
+    
+    event lfo_rate (float v) { rate = clamp(v, 0.01f, 20.0f); }
+    event lfo_wave (float v) { wave = clamp(v, 0.0f, 4.0f); }
+    event lfo_to_pitch (float v) { toPitch = clamp(v, 0.0f, 1.0f); }
+    event lfo_to_filter (float v) { toFilter = clamp(v, 0.0f, 1.0f); }
+    event lfo_to_amp (float v) { toAmp = clamp(v, 0.0f, 1.0f); }
+    
+    void main()
+    {
+        loop
+        {
+            phase += rate / float(processor.frequency);
+            if (phase >= 1.0f) phase -= 1.0f;
+            
+            lfoOut <- float(sin(phase * twoPi));
+            advance();
+        }
+    }
+}
+
+processor Mixer
+{
+    input stream float<2> fmIn;
+    input stream float<2> tapeIn;
+    input stream float<2> analogIn;
+    
+    output stream float<2> audioOut;
+    
+    void main()
+    {
+        loop
+        {
+            audioOut <- (fmIn + tapeIn + analogIn) * 0.5f;
+            advance();
+        }
+    }
+}
+
+processor MasterSection
+{
+    input event float vibe;
+    input event float warmth;
+    input event float space;
+    input event float movement;
+    input event float grit;
+    
+    input event float master_volume;
+    input event float master_width;
+    input event float master_highcut;
+    
+    input stream float<2> audioIn;
+    output stream float<2> audioOut;
+    
+    float vibeAmount = 0.5f;
+    float warmthAmount = 0.5f;
+    float spaceAmount = 0.3f;
+    float movementAmount = 0.3f;
+    float gritAmount = 0.2f;
+    
+    float volume = 0.7f;
+    float width = 0.5f;
+    float highcut = 10000.0f;
+    
+    float<2> filterState = float<2>(0.0f, 0.0f);
+    
+    event vibe (float v) { vibeAmount = clamp(v, 0.0f, 1.0f); }
+    event warmth (float v) { warmthAmount = clamp(v, 0.0f, 1.0f); }
+    event space (float v) { spaceAmount = clamp(v, 0.0f, 1.0f); }
+    event movement (float v) { movementAmount = clamp(v, 0.0f, 1.0f); }
+    event grit (float v) { gritAmount = clamp(v, 0.0f, 1.0f); }
+    
+    event master_volume (float v) { volume = clamp(v, 0.0f, 1.0f); }
+    event master_width (float v) { width = clamp(v, 0.0f, 1.0f); }
+    event master_highcut (float v) { highcut = clamp(v, 1000.0f, 20000.0f); }
+    
+    void main()
+    {
+        loop
+        {
+            var signal = audioIn;
+            
+            let f = highcut / float(processor.frequency);
+            filterState = filterState + f * (signal - filterState);
+            signal = filterState;
+            
+            let mid = (signal[0] + signal[1]) * 0.5f;
+            let side = (signal[0] - signal[1]) * 0.5f * width;
+            
+            signal = float<2>(mid + side, mid - side);
+            
+            audioOut <- signal * volume;
+            advance();
+        }
+    }
+}
