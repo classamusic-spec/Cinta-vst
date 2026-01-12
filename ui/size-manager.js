@@ -16,8 +16,8 @@ class SizeManager {
         this.sizes = {
             full: { label: 'FULL', width: 1400, height: 850 },
             compact: { label: 'COMPACT', width: 900, height: 500 },
-            mini: { label: 'MINI', width: 500, height: 300 },
-            strip: { label: 'STRIP', width: 300, height: 150 }
+            mini: { label: 'MINI', width: 500, height: 340 },
+            strip: { label: 'STRIP', width: 380, height: 160 }
         };
         
         this.init();

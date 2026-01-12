@@ -225,40 +225,49 @@
 
 .synth-container.size-mini {
     width: 500px;
-    height: 300px;
+    height: 340px;
     padding: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 .size-mini .header {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
 }
 
 .size-mini .vintage-badge {
-    transform: scale(0.6);
+    transform: scale(0.65);
     transform-origin: left center;
 }
 
 .size-mini .vu-meter,
-.size-mini .tape-deck {
+.size-mini .tape-deck,
+.size-mini .preset-browser {
     display: none;
 }
 
 /* Minimal engine section - just toggles */
 .size-mini .engine-section {
     display: flex;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 12px;
+    margin-bottom: 15px;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .size-mini .engine-panel {
-    padding: 8px 12px;
+    padding: 10px 15px;
     min-width: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .size-mini .engine-panel h3 {
-    font-size: 10px;
-    margin-bottom: 6px;
+    font-size: 11px;
+    margin-bottom: 8px;
+    white-space: nowrap;
 }
 
 .size-mini .knob-group,
@@ -270,22 +279,34 @@
 .size-mini .engine-toggle {
     display: block;
     margin: 0 auto;
-    transform: scale(0.9);
+    transform: scale(1);
 }
 
 /* Compact master section */
 .size-mini .master-section {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    gap: 10px;
+    padding: 0;
+}
+
+.size-mini .master-section .knob-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
 }
 
 .size-mini .master-section .knob {
-    transform: scale(0.7);
+    transform: scale(0.75);
+}
+
+.size-mini .master-section label {
+    font-size: 9px;
 }
 
 .size-mini .master-section h3 {
-    font-size: 10px;
+    display: none;
 }
 
 /* Hide everything else */
@@ -302,49 +323,74 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .synth-container.size-strip {
-    width: 300px;
-    height: 150px;
-    padding: 10px;
+    width: 380px;
+    height: 160px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .size-strip .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 0;
     height: auto;
+    flex-shrink: 0;
+}
+
+.size-strip .logo {
+    display: flex;
+    align-items: center;
 }
 
 .size-strip .vintage-badge {
-    transform: scale(0.5);
+    transform: scale(0.55);
     transform-origin: left center;
 }
 
-.size-strip .tape-deck {
+.size-strip .tape-deck,
+.size-strip .preset-browser {
     display: none;
 }
 
 /* Show VU meter in strip mode */
 .size-strip .vu-meter {
     display: block;
-    transform: scale(0.5);
+    transform: scale(0.55);
     transform-origin: right center;
+    margin-right: -10px;
 }
 
 /* Ultra minimal - just essential controls */
 .size-strip .master-section {
     display: flex;
-    gap: 12px;
+    gap: 15px;
     align-items: center;
     justify-content: center;
+    padding: 0;
+    flex-shrink: 0;
 }
 
 .size-strip .master-section h3 {
     display: none;
 }
 
+.size-strip .master-section .knob-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
 .size-strip .master-section .knob {
-    transform: scale(0.65);
+    transform: scale(0.7);
+}
+
+.size-strip .master-section label {
+    font-size: 9px;
+    white-space: nowrap;
 }
 
 /* Show only Vibe and Master Volume */
@@ -357,7 +403,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 12px;
+    margin-left: 15px;
+    flex-shrink: 0;
 }
 
 .size-strip .arp-section > *:not(.toggle-button) {
@@ -365,7 +412,7 @@
 }
 
 .size-strip .arp-section .toggle-button {
-    transform: scale(0.85);
+    transform: scale(0.9);
 }
 
 /* Hide everything else */
