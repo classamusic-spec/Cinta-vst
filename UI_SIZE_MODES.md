@@ -6,10 +6,10 @@ CINTA now features a fully responsive UI with 4 size modes that can be toggled v
 
 ## 4 Size Modes
 
-### 1. FULL (1400×850) - Everything Visible
+### 1. FULL (1050×640) - Everything Visible
 **Keyboard:** `Ctrl+1`
 
-Complete studio view with all features:
+Complete studio view with all features (75% scale for comfortable desktop use):
 - ✅ All 3 synthesis engines (FM, Tape, Analog)
 - ✅ Complete texture rack with all effects
 - ✅ Envelope and LFO sections
