@@ -1,24 +1,19 @@
 {
     "CmajorVersion": 1,
-    "ID": "com.cinta.vintage-texture-machine",
+    "ID": "com.classamusic.cinta",
     "version": "1.0.0",
     "name": "CINTA",
-    "description": "Vintage Texture Machine for Latin Music Production",
+    "description": "Vintage Texture Machine - 1975 Havana Studio Synth",
     "category": "synth",
-    "manufacturer": "CINTA",
+    "manufacturer": "Classa Music",
     "isInstrument": true,
-    "source": [
-        "src/CINTA.cmajor",
-        "src/FMEngine.cmajor",
-        "src/TapeEngine.cmajor",
-        "src/AnalogEngine.cmajor",
-        "src/TextureRack.cmajor",
-        "src/ArpMachine.cmajor"
-    ],
+    
+    "source": "src/CINTA.cmajor",
+    
     "view": {
-        "src": "ui/index.html",
-        "width": 1400,
-        "height": 850,
+        "src": "ui/index-vintage.html",
+        "width": 900,
+        "height": 500,
         "resizable": true
     }
 }
