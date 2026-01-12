@@ -112,12 +112,12 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   MODE 1: FULL (1050x640) - Everything visible at 75% scale
+   MODE 1: FULL (1400x850) - Everything visible
    ═══════════════════════════════════════════════════════════════ */
 
 .synth-container.size-full {
-    width: 1050px;
-    height: 640px;
+    width: 1400px;
+    height: 850px;
 }
 
 .size-full .engine-section,
