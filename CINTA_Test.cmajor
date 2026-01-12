@@ -11,20 +11,21 @@ processor CINTA_Test [[ main ]]
     output stream float<2> audioOut;
     
     float phase = 0.0f;
-    float frequency = 0.0f;
+    float frequency = 440.0f;
     float amplitude = 0.0f;
+    float targetAmplitude = 0.0f;
     
     event noteOn(std::notes::NoteOn e)
     {
         frequency = std::notes::noteToFrequency(e.pitch);
-        amplitude = e.velocity;
-        console <- "NOTE ON: pitch=" <- e.pitch <- " freq=" <- frequency <- " vel=" <- e.velocity;
+        targetAmplitude = e.velocity;
+        console <- "🎹 NOTE ON: pitch=" <- e.pitch <- " freq=" <- frequency <- " vel=" <- e.velocity;
     }
     
     event noteOff(std::notes::NoteOff e)
     {
-        amplitude = 0.0f;
-        console <- "NOTE OFF: pitch=" <- e.pitch;
+        targetAmplitude = 0.0f;
+        console <- "🎹 NOTE OFF: pitch=" <- e.pitch;
     }
     
     void main()
@@ -33,21 +34,20 @@ processor CINTA_Test [[ main ]]
         
         loop
         {
-            if (amplitude > 0.0f)
-            {
-                let phaseInc = frequency / sampleRate;
-                let signal = float(sin(phase * twoPi)) * amplitude * 0.3f;
-                
-                phase += phaseInc;
-                if (phase >= 1.0f) phase -= 1.0f;
-                
-                audioOut <- float<2>(signal, signal);
-            }
-            else
-            {
-                audioOut <- float<2>(0.0f, 0.0f);
-            }
+            // Smooth amplitude changes
+            if (amplitude < targetAmplitude)
+                amplitude += 0.001f;
+            else if (amplitude > targetAmplitude)
+                amplitude -= 0.001f;
             
+            // Always generate audio
+            let phaseInc = frequency / sampleRate;
+            let signal = float(sin(phase * twoPi)) * amplitude * 0.3f;
+            
+            phase += phaseInc;
+            if (phase >= 1.0f) phase -= 1.0f;
+            
+            audioOut <- float<2>(signal, signal);
             advance();
         }
     }

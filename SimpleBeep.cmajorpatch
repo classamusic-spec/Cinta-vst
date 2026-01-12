@@ -1,0 +1,12 @@
+{
+    "CmajorVersion": 1,
+    "ID": "com.test.beep",
+    "version": "1.0.0",
+    "name": "Simple Beep Test",
+    "description": "Generates constant 440Hz tone - no MIDI needed",
+    "category": "synth",
+    "manufacturer": "Test",
+    "isInstrument": false,
+    
+    "source": "SimpleBeep.cmajor"
+}

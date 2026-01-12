@@ -1,0 +1,26 @@
+// Simplest possible test - just generates a constant tone
+
+processor SimpleBeep [[ main ]]
+{
+    output stream float<2> audioOut;
+    
+    float phase = 0.0f;
+    
+    void main()
+    {
+        let sampleRate = float(processor.frequency);
+        let frequency = 440.0f; // A4 note
+        
+        loop
+        {
+            let phaseInc = frequency / sampleRate;
+            let signal = float(sin(phase * twoPi)) * 0.2f; // Quiet sine wave
+            
+            phase += phaseInc;
+            if (phase >= 1.0f) phase -= 1.0f;
+            
+            audioOut <- float<2>(signal, signal);
+            advance();
+        }
+    }
+}
