@@ -1,0 +1,12 @@
+{
+    "CmajorVersion": 1,
+    "ID": "com.classamusic.cinta.test",
+    "version": "1.0.0",
+    "name": "CINTA Test",
+    "description": "Simple test to verify MIDI input and audio output",
+    "category": "synth",
+    "manufacturer": "Classa Music",
+    "isInstrument": true,
+    
+    "source": "CINTA_Test.cmajor"
+}
