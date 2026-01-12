@@ -12,7 +12,7 @@ class SizeManager {
         this.indicator = document.getElementById('sizeIndicator');
         this.sizeOptions = document.querySelectorAll('.size-option');
         
-        this.currentSize = 'full';
+        this.currentSize = 'compact';
         this.sizes = {
             full: { label: 'FULL', width: 1400, height: 850 },
             compact: { label: 'COMPACT', width: 900, height: 500 },
@@ -24,10 +24,13 @@ class SizeManager {
     }
     
     init() {
-        // Load saved size preference from localStorage
+        // Load saved size preference from localStorage (default to COMPACT)
         const savedSize = localStorage.getItem('cinta-ui-size');
         if (savedSize && this.sizes[savedSize]) {
             this.setSize(savedSize, false);
+        } else {
+            // Set COMPACT as default if no saved preference
+            this.setSize('compact', false);
         }
         
         // Toggle button click

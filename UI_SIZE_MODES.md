@@ -20,10 +20,10 @@ Complete studio view with all features:
 
 **Best for:** Full production work, sound design, preset creation
 
-### 2. COMPACT (900×500) - Engines + Macros + Arp
+### 2. COMPACT (900×500) - Engines + Macros + Arp ⭐ DEFAULT
 **Keyboard:** `Ctrl+2`
 
-Streamlined view for performance:
+**This is the default mode** - Streamlined view for daily use:
 - ✅ 3 engine panels with on/off toggles
 - ✅ Master macro controls (Vibe, Warmth, Space, Movement, Grit)
 - ✅ Arpeggiator pattern display
@@ -47,16 +47,18 @@ Minimal control surface:
 
 **Best for:** Quick adjustments, monitoring, small displays
 
-### 4. STRIP (300×150) - Vibe + Master + Arp Toggle
+### 4. STRIP (300×150) - Vibe + Master + Arp + VU Meter
 **Keyboard:** `Ctrl+4`
 
 Ultra-minimal strip:
 - ✅ Vibe macro knob
 - ✅ Master volume
 - ✅ Arpeggiator on/off toggle
+- ✅ VU meter (scaled down)
+- ✅ CINTA badge
 - ❌ Everything else hidden
 
-**Best for:** DAW integration, minimal footprint, essential controls only
+**Best for:** DAW integration, minimal footprint, essential controls with visual feedback
 
 ## How to Use
 

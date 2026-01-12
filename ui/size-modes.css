@@ -298,7 +298,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   MODE 4: STRIP (300x150) - Vibe, Master, Arp toggle only
+   MODE 4: STRIP (300x150) - Vibe, Master, Arp toggle, VU meter
    ═══════════════════════════════════════════════════════════════ */
 
 .synth-container.size-strip {
@@ -308,16 +308,35 @@
 }
 
 .size-strip .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    height: auto;
+}
+
+.size-strip .vintage-badge {
+    transform: scale(0.5);
+    transform-origin: left center;
+}
+
+.size-strip .tape-deck {
     display: none;
+}
+
+/* Show VU meter in strip mode */
+.size-strip .vu-meter {
+    display: block;
+    transform: scale(0.5);
+    transform-origin: right center;
 }
 
 /* Ultra minimal - just essential controls */
 .size-strip .master-section {
     display: flex;
-    gap: 8px;
+    gap: 12px;
     align-items: center;
     justify-content: center;
-    height: 100%;
 }
 
 .size-strip .master-section h3 {
@@ -325,7 +344,7 @@
 }
 
 .size-strip .master-section .knob {
-    transform: scale(0.6);
+    transform: scale(0.65);
 }
 
 /* Show only Vibe and Master Volume */
@@ -346,7 +365,7 @@
 }
 
 .size-strip .arp-section .toggle-button {
-    transform: scale(0.8);
+    transform: scale(0.85);
 }
 
 /* Hide everything else */
