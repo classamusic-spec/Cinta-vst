@@ -1,0 +1,33 @@
+{
+    "name": "Tainy Bell",
+    "category": "keys",
+    "tags": ["tainy", "minimal", "hypnotic", "reggaeton"],
+    "description": "Minimal hypnotic bell in the style of Tainy - sparse and effective",
+    "parameters": {
+        "vibe": 0.25,
+        "warmth": 0.3,
+        "space": 0.5,
+        "movement": 0.05,
+        "grit": 0.0,
+        "fm_on": 1,
+        "fm_ratio": 3.0,
+        "fm_depth": 0.5,
+        "fm_feedback": 0.0,
+        "fm_carrier_wave": 0,
+        "fm_mod_wave": 0,
+        "fm_level": 0.7,
+        "fm_pan": 0,
+        "tape_on": 0,
+        "analog_on": 0,
+        "amp_attack": 0.001,
+        "amp_decay": 0.4,
+        "amp_sustain": 0.15,
+        "amp_release": 0.6,
+        "filter_attack": 0.001,
+        "filter_decay": 0.3,
+        "filter_sustain": 0.2,
+        "filter_release": 0.4,
+        "master_volume": 0.7,
+        "master_highcut": 11000
+    }
+}

@@ -1,0 +1,147 @@
+namespace TapeEngine
+{
+    processor TapeSynth
+    {
+        input event float tape_sound;
+        input event float tape_speed;
+        input event float tape_wow;
+        input event float tape_flutter;
+        input event float tape_start;
+        input event float tape_level;
+        input event float tape_pan;
+        input event float tape_on;
+        
+        input event (std::notes::NoteOn, std::notes::NoteOff, std::notes::PitchBend) midiIn;
+        input stream float ampEnv;
+        input stream float filterEnv;
+        input stream float lfoOut;
+        
+        output stream float<2> audioOut;
+        
+        float soundType = 0.0f;
+        float speed = 1.0f;
+        float wow = 0.2f;
+        float flutter = 0.1f;
+        float startPos = 0.0f;
+        float level = 0.7f;
+        float pan = 0.0f;
+        float engineOn = 1.0f;
+        
+        float phase = 0.0f;
+        float phase2 = 0.0f;
+        float wowPhase = 0.0f;
+        float flutterPhase = 0.0f;
+        float currentFreq = 0.0f;
+        float pitchBend = 0.0f;
+        bool noteActive = false;
+        float noiseState = 0.5f;
+        
+        event tape_sound (float v) { soundType = clamp(v, 0.0f, 4.0f); }
+        event tape_speed (float v) { speed = clamp(v, 0.5f, 2.0f); }
+        event tape_wow (float v) { wow = clamp(v, 0.0f, 1.0f); }
+        event tape_flutter (float v) { flutter = clamp(v, 0.0f, 1.0f); }
+        event tape_start (float v) { startPos = clamp(v, 0.0f, 1.0f); }
+        event tape_level (float v) { level = clamp(v, 0.0f, 1.0f); }
+        event tape_pan (float v) { pan = clamp(v, -1.0f, 1.0f); }
+        event tape_on (float v) { engineOn = v; }
+        
+        event midiIn (std::notes::NoteOn e)
+        {
+            currentFreq = std::notes::noteToFrequency(e.pitch);
+            phase = startPos;
+            noteActive = true;
+        }
+        
+        event midiIn (std::notes::NoteOff e)
+        {
+            noteActive = false;
+        }
+        
+        event midiIn (std::notes::PitchBend e)
+        {
+            pitchBend = e.bendSemitones;
+        }
+        
+        float whiteNoise()
+        {
+            noiseState = fmod(noiseState * 1664525.0f + 1013904223.0f, 4294967296.0f);
+            return (noiseState / 2147483648.0f) - 1.0f;
+        }
+        
+        float generateTapeSound(float p, float p2, int sound)
+        {
+            if (sound == 0)
+            {
+                let saw1 = (fmod(p, 1.0f) - 0.5f) * 2.0f;
+                let saw2 = (fmod(p2, 1.0f) - 0.5f) * 2.0f;
+                return (saw1 + saw2) * 0.5f * 0.6f;
+            }
+            else if (sound == 1)
+            {
+                let sine = float(sin(p * twoPi));
+                let breath = whiteNoise() * 0.1f;
+                return (sine * 0.7f + breath) * 0.5f;
+            }
+            else if (sound == 2)
+            {
+                let f1 = float(sin(p * twoPi));
+                let f2 = float(sin(p * twoPi * 2.0f)) * 0.5f;
+                let f3 = float(sin(p * twoPi * 3.0f)) * 0.3f;
+                return (f1 + f2 + f3) * 0.4f;
+            }
+            else if (sound == 3)
+            {
+                let saw = (fmod(p, 1.0f) - 0.5f) * 2.0f;
+                let harmonic = float(sin(p * twoPi * 3.0f)) * 0.3f;
+                return (saw * 0.7f + harmonic) * 0.5f;
+            }
+            else
+            {
+                let carrier = float(sin(p * twoPi));
+                let mod = float(sin(p * twoPi * 2.0f)) * 0.5f;
+                return carrier * (1.0f + mod) * 0.4f;
+            }
+        }
+        
+        void main()
+        {
+            loop
+            {
+                if (engineOn < 0.5f || !noteActive)
+                {
+                    audioOut <- float<2>(0.0f, 0.0f);
+                    advance();
+                    continue;
+                }
+                
+                wowPhase += 0.5f / float(processor.frequency);
+                if (wowPhase >= 1.0f) wowPhase -= 1.0f;
+                
+                flutterPhase += 8.0f / float(processor.frequency);
+                if (flutterPhase >= 1.0f) flutterPhase -= 1.0f;
+                
+                let wowMod = float(sin(wowPhase * twoPi)) * wow * 0.02f;
+                let flutterMod = float(sin(flutterPhase * twoPi)) * flutter * 0.005f;
+                
+                let totalSpeed = speed * (1.0f + wowMod + flutterMod);
+                let freq = currentFreq * pow(2.0f, pitchBend / 12.0f) * totalSpeed;
+                
+                let phaseInc = freq / float(processor.frequency);
+                phase += phaseInc;
+                phase2 += phaseInc * 1.01f;
+                
+                if (phase >= 1.0f) phase -= 1.0f;
+                if (phase2 >= 1.0f) phase2 -= 1.0f;
+                
+                let sound = int(soundType);
+                let audioSignal = generateTapeSound(phase, phase2, sound) * ampEnv * level;
+                
+                let leftGain = sqrt((1.0f - pan) * 0.5f);
+                let rightGain = sqrt((1.0f + pan) * 0.5f);
+                
+                audioOut <- float<2>(audioSignal * leftGain, audioSignal * rightGain);
+                advance();
+            }
+        }
+    }
+}

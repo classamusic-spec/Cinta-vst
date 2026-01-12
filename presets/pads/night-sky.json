@@ -1,0 +1,25 @@
+﻿{
+    "category":  "pads",
+    "name":  "Night Sky",
+    "description":  "Dark, starry",
+    "tags":  [
+                 "pad",
+                 "atmospheric"
+             ],
+    "parameters":  {
+                       "grit":  0,
+                       "amp_sustain":  0.8,
+                       "amp_decay":  2,
+                       "master_highcut":  8000,
+                       "space":  0.7,
+                       "vibe":  0.5,
+                       "movement":  0.3,
+                       "warmth":  0.6,
+                       "amp_attack":  2.0,
+                       "amp_release":  4.5,
+                       "fm_on":  1,
+                       "master_volume":  0.65,
+                       "tape_on":  0,
+                       "analog_on":  0
+                   }
+}

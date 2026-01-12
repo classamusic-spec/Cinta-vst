@@ -1,0 +1,175 @@
+namespace AnalogEngine
+{
+    processor AnalogSynth
+    {
+        input event float analog_osc1_wave;
+        input event float analog_osc1_level;
+        input event float analog_osc2_wave;
+        input event float analog_osc2_level;
+        input event float analog_osc2_detune;
+        input event float analog_osc2_octave;
+        input event float analog_pulse_width;
+        input event float analog_pwm_rate;
+        input event float analog_pwm_depth;
+        input event float analog_sub_level;
+        input event float analog_noise_level;
+        input event float analog_filter_cutoff;
+        input event float analog_filter_resonance;
+        input event float analog_filter_env;
+        input event float analog_level;
+        input event float analog_pan;
+        input event float analog_on;
+        
+        input event (std::notes::NoteOn, std::notes::NoteOff, std::notes::PitchBend) midiIn;
+        input stream float ampEnv;
+        input stream float filterEnv;
+        input stream float lfoOut;
+        
+        output stream float<2> audioOut;
+        
+        float osc1Wave = 0.0f;
+        float osc1Level = 0.7f;
+        float osc2Wave = 0.0f;
+        float osc2Level = 0.5f;
+        float osc2Detune = 0.0f;
+        float osc2Octave = 0.0f;
+        float pulseWidth = 0.5f;
+        float pwmRate = 0.0f;
+        float pwmDepth = 0.0f;
+        float subLevel = 0.3f;
+        float noiseLevel = 0.0f;
+        float filterCutoff = 2000.0f;
+        float filterResonance = 0.3f;
+        float filterEnvAmount = 0.5f;
+        float level = 0.7f;
+        float pan = 0.0f;
+        float engineOn = 1.0f;
+        
+        float phase1 = 0.0f;
+        float phase2 = 0.0f;
+        float subPhase = 0.0f;
+        float pwmPhase = 0.0f;
+        float currentFreq = 0.0f;
+        float pitchBend = 0.0f;
+        bool noteActive = false;
+        float noiseState = 0.12345f;
+        
+        float filterState1 = 0.0f;
+        float filterState2 = 0.0f;
+        
+        event analog_osc1_wave (float v) { osc1Wave = clamp(v, 0.0f, 3.0f); }
+        event analog_osc1_level (float v) { osc1Level = clamp(v, 0.0f, 1.0f); }
+        event analog_osc2_wave (float v) { osc2Wave = clamp(v, 0.0f, 3.0f); }
+        event analog_osc2_level (float v) { osc2Level = clamp(v, 0.0f, 1.0f); }
+        event analog_osc2_detune (float v) { osc2Detune = clamp(v, -100.0f, 100.0f); }
+        event analog_osc2_octave (float v) { osc2Octave = clamp(v, -2.0f, 2.0f); }
+        event analog_pulse_width (float v) { pulseWidth = clamp(v, 0.1f, 0.9f); }
+        event analog_pwm_rate (float v) { pwmRate = clamp(v, 0.0f, 10.0f); }
+        event analog_pwm_depth (float v) { pwmDepth = clamp(v, 0.0f, 1.0f); }
+        event analog_sub_level (float v) { subLevel = clamp(v, 0.0f, 1.0f); }
+        event analog_noise_level (float v) { noiseLevel = clamp(v, 0.0f, 1.0f); }
+        event analog_filter_cutoff (float v) { filterCutoff = clamp(v, 20.0f, 20000.0f); }
+        event analog_filter_resonance (float v) { filterResonance = clamp(v, 0.0f, 1.0f); }
+        event analog_filter_env (float v) { filterEnvAmount = clamp(v, -1.0f, 1.0f); }
+        event analog_level (float v) { level = clamp(v, 0.0f, 1.0f); }
+        event analog_pan (float v) { pan = clamp(v, -1.0f, 1.0f); }
+        event analog_on (float v) { engineOn = v; }
+        
+        event midiIn (std::notes::NoteOn e)
+        {
+            currentFreq = std::notes::noteToFrequency(e.pitch);
+            noteActive = true;
+        }
+        
+        event midiIn (std::notes::NoteOff e)
+        {
+            noteActive = false;
+        }
+        
+        event midiIn (std::notes::PitchBend e)
+        {
+            pitchBend = e.bendSemitones;
+        }
+        
+        float whiteNoise()
+        {
+            noiseState = fmod(noiseState * 1664525.0f + 1013904223.0f, 4294967296.0f);
+            return (noiseState / 2147483648.0f) - 1.0f;
+        }
+        
+        float generateOsc(float p, int wave, float pw)
+        {
+            if (wave == 0)
+                return (fmod(p, 1.0f) - 0.5f) * 2.0f;
+            else if (wave == 1)
+                return (fmod(p, 1.0f) < 0.5f) ? 1.0f : -1.0f;
+            else if (wave == 2)
+                return (fmod(p, 1.0f) < pw) ? 1.0f : -1.0f;
+            else
+                return (fmod(p, 1.0f) - 0.5f) * 4.0f;
+        }
+        
+        float processFilter(float signal, float cutoff, float res, float envMod)
+        {
+            let modCutoff = cutoff * (1.0f + envMod * 4.0f);
+            let clampedCutoff = clamp(modCutoff, 20.0f, 20000.0f);
+            let f = clampedCutoff / float(processor.frequency);
+            let q = 1.0f - res * 0.95f;
+            
+            filterState1 += f * (signal - filterState1 - q * filterState2);
+            filterState2 += f * filterState1;
+            
+            return filterState2;
+        }
+        
+        void main()
+        {
+            loop
+            {
+                if (engineOn < 0.5f || !noteActive)
+                {
+                    audioOut <- float<2>(0.0f, 0.0f);
+                    advance();
+                    continue;
+                }
+                
+                let freq = currentFreq * pow(2.0f, pitchBend / 12.0f);
+                
+                pwmPhase += pwmRate / float(processor.frequency);
+                if (pwmPhase >= 1.0f) pwmPhase -= 1.0f;
+                let currentPW = float(pulseWidth + sin(pwmPhase * twoPi) * pwmDepth * 0.3f);
+                
+                let phaseInc1 = freq / float(processor.frequency);
+                phase1 += phaseInc1;
+                if (phase1 >= 1.0f) phase1 -= 1.0f;
+                
+                let osc2Freq = freq * pow(2.0f, (osc2Detune / 1200.0f) + osc2Octave);
+                let phaseInc2 = osc2Freq / float(processor.frequency);
+                phase2 += phaseInc2;
+                if (phase2 >= 1.0f) phase2 -= 1.0f;
+                
+                let subFreq = freq * 0.5f;
+                let subPhaseInc = subFreq / float(processor.frequency);
+                subPhase += subPhaseInc;
+                if (subPhase >= 1.0f) subPhase -= 1.0f;
+                
+                let osc1 = generateOsc(phase1, int(osc1Wave), currentPW) * osc1Level;
+                let osc2 = generateOsc(phase2, int(osc2Wave), currentPW) * osc2Level;
+                let sub = float(sin(subPhase * twoPi)) * subLevel;
+                let noise = whiteNoise() * noiseLevel;
+                
+                let mixed = float((osc1 + osc2 + sub + noise) * 0.3f);
+                
+                let filtered = processFilter(mixed, filterCutoff, filterResonance, filterEnv * filterEnvAmount);
+                
+                let audioSignal = filtered * ampEnv * level;
+                
+                let leftGain = sqrt((1.0f - pan) * 0.5f);
+                let rightGain = sqrt((1.0f + pan) * 0.5f);
+                
+                audioOut <- float<2>(audioSignal * leftGain, audioSignal * rightGain);
+                advance();
+            }
+        }
+    }
+}

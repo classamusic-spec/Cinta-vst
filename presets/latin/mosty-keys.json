@@ -1,0 +1,26 @@
+﻿{
+    "category":  "latin",
+    "name":  "Mosty Keys",
+    "description":  "Pop-friendly",
+    "tags":  [
+                 "latin",
+                 "reggaeton",
+                 "urban"
+             ],
+    "parameters":  {
+                       "grit":  0.1,
+                       "amp_sustain":  0.6,
+                       "amp_decay":  0.5,
+                       "master_highcut":  12000,
+                       "space":  0.4,
+                       "vibe":  0.4,
+                       "movement":  0.2,
+                       "warmth":  0.5,
+                       "amp_attack":  0.01,
+                       "amp_release":  0.5,
+                       "fm_on":  1,
+                       "master_volume":  0.75,
+                       "tape_on":  0,
+                       "analog_on":  0
+                   }
+}

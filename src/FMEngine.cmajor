@@ -1,0 +1,111 @@
+namespace FMEngine
+{
+    processor FMSynth
+    {
+        input event float fm_ratio;
+        input event float fm_depth;
+        input event float fm_feedback;
+        input event float fm_carrier_wave;
+        input event float fm_mod_wave;
+        input event float fm_level;
+        input event float fm_pan;
+        input event float fm_on;
+        
+        input event (std::notes::NoteOn, std::notes::NoteOff, std::notes::PitchBend) midiIn;
+        input stream float ampEnv;
+        input stream float filterEnv;
+        input stream float lfoOut;
+        
+        output stream float<2> audioOut;
+        
+        float ratio = 2.0f;
+        float depth = 0.5f;
+        float feedback = 0.0f;
+        float carrierWave = 0.0f;
+        float modWave = 0.0f;
+        float level = 0.7f;
+        float pan = 0.0f;
+        float engineOn = 1.0f;
+        
+        float phase = 0.0f;
+        float modPhase = 0.0f;
+        float feedbackSample = 0.0f;
+        float currentFreq = 0.0f;
+        float targetFreq = 0.0f;
+        float pitchBend = 0.0f;
+        bool noteActive = false;
+        
+        event fm_ratio (float v) { ratio = clamp(v, 0.5f, 16.0f); }
+        event fm_depth (float v) { depth = clamp(v, 0.0f, 1.0f); }
+        event fm_feedback (float v) { feedback = clamp(v, 0.0f, 1.0f); }
+        event fm_carrier_wave (float v) { carrierWave = clamp(v, 0.0f, 1.0f); }
+        event fm_mod_wave (float v) { modWave = clamp(v, 0.0f, 1.0f); }
+        event fm_level (float v) { level = clamp(v, 0.0f, 1.0f); }
+        event fm_pan (float v) { pan = clamp(v, -1.0f, 1.0f); }
+        event fm_on (float v) { engineOn = v; }
+        
+        event midiIn (std::notes::NoteOn e)
+        {
+            targetFreq = std::notes::noteToFrequency(e.pitch);
+            currentFreq = targetFreq;
+            noteActive = true;
+        }
+        
+        event midiIn (std::notes::NoteOff e)
+        {
+            noteActive = false;
+        }
+        
+        event midiIn (std::notes::PitchBend e)
+        {
+            pitchBend = e.bendSemitones;
+        }
+        
+        float generateWave(float p, float waveType)
+        {
+            if (waveType < 0.5f)
+                return float(sin(p * twoPi));
+            else
+                return (fmod(p, 1.0f) - 0.5f) * 4.0f;
+        }
+        
+        void main()
+        {
+            loop
+            {
+                if (engineOn < 0.5f || !noteActive)
+                {
+                    audioOut <- float<2>(0.0f, 0.0f);
+                    advance();
+                    continue;
+                }
+                
+                let freq = currentFreq * pow(2.0f, pitchBend / 12.0f);
+                let modFreq = freq * ratio;
+                
+                let modPhaseInc = modFreq / float(processor.frequency);
+                modPhase = fmod(modPhase + modPhaseInc, 1.0f);
+                
+                var modulator = generateWave(modPhase, modWave);
+                modulator += feedbackSample * feedback;
+                
+                let modAmount = modulator * depth * 2.0f;
+                
+                let carrierPhaseInc = freq / float(processor.frequency);
+                phase = fmod(phase + carrierPhaseInc + modAmount * 0.1f, 1.0f);
+                
+                let carrier = generateWave(phase, carrierWave);
+                
+                feedbackSample = modulator * 0.5f;
+                
+                let audioSignal = carrier * ampEnv * level * 0.5f;
+                
+                let leftGain = sqrt((1.0f - pan) * 0.5f);
+                let rightGain = sqrt((1.0f + pan) * 0.5f);
+                
+                audioOut <- float<2>(audioSignal * leftGain, audioSignal * rightGain);
+                advance();
+            }
+        }
+    }
+}

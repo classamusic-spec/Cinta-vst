@@ -1,0 +1,33 @@
+{
+    "name": "Dirty Sub",
+    "category": "bass",
+    "tags": ["sub", "distorted", "tube", "gritty"],
+    "description": "Sub bass with tube distortion - dirty and aggressive",
+    "parameters": {
+        "vibe": 0.3,
+        "warmth": 0.5,
+        "space": 0.15,
+        "movement": 0.0,
+        "grit": 0.6,
+        "fm_on": 0,
+        "tape_on": 0,
+        "analog_on": 1,
+        "analog_osc1_wave": 0,
+        "analog_osc1_level": 0.0,
+        "analog_sub_level": 1.0,
+        "analog_filter_cutoff": 250,
+        "analog_filter_resonance": 0.3,
+        "analog_level": 0.9,
+        "tube_on": 1,
+        "tube_drive": 0.7,
+        "tube_bias": 0.6,
+        "tube_warmth": 0.5,
+        "tube_output": 0.75,
+        "amp_attack": 0.001,
+        "amp_decay": 0.6,
+        "amp_sustain": 0.8,
+        "amp_release": 0.4,
+        "master_volume": 0.8,
+        "master_highcut": 400
+    }
+}

@@ -1,0 +1,45 @@
+# Cmajor build artifacts
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+build/
+dist/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node modules (if using npm for UI)
+node_modules/
+package-lock.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Compiled output
+*.wasm
+*.js.map
+
+# User-specific files
+.user
+*.suo
+*.user
+*.userosscache
+*.sln.docstates

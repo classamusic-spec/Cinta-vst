@@ -1,0 +1,33 @@
+{
+    "name": "Neon Keys",
+    "category": "keys",
+    "tags": ["bright", "modern", "fm", "pop"],
+    "description": "Bright FM keys with modern sheen - perfect for pop and urban tracks",
+    "parameters": {
+        "vibe": 0.1,
+        "warmth": 0.2,
+        "space": 0.4,
+        "movement": 0.2,
+        "grit": 0.0,
+        "fm_on": 1,
+        "fm_ratio": 5.0,
+        "fm_depth": 0.7,
+        "fm_feedback": 0.3,
+        "fm_carrier_wave": 0,
+        "fm_mod_wave": 0,
+        "fm_level": 0.85,
+        "fm_pan": 0,
+        "tape_on": 0,
+        "analog_on": 0,
+        "amp_attack": 0.002,
+        "amp_decay": 0.5,
+        "amp_sustain": 0.4,
+        "amp_release": 0.7,
+        "filter_attack": 0.005,
+        "filter_decay": 0.3,
+        "filter_sustain": 0.5,
+        "filter_release": 0.5,
+        "master_volume": 0.75,
+        "master_highcut": 15000
+    }
+}

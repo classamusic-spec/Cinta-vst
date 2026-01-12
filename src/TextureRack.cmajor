@@ -1,0 +1,295 @@
+namespace TextureRack
+{
+    processor TextureEffects
+    {
+        input event float tape_age_on;
+        input event float tape_age_wow_rate;
+        input event float tape_age_wow_depth;
+        input event float tape_age_flutter_rate;
+        input event float tape_age_flutter_depth;
+        input event float tape_age_hiss;
+        input event float tape_age_dropout;
+        
+        input event float vinyl_on;
+        input event float vinyl_crackle;
+        input event float vinyl_dust;
+        input event float vinyl_surface;
+        input event float vinyl_warp;
+        
+        input event float radio_on;
+        input event float radio_mode;
+        input event float radio_drift;
+        input event float radio_static;
+        input event float radio_bandwidth;
+        
+        input event float room_on;
+        input event float room_size;
+        input event float room_damping;
+        input event float room_mix;
+        
+        input event float tube_on;
+        input event float tube_drive;
+        input event float tube_bias;
+        input event float tube_warmth;
+        input event float tube_output;
+        
+        input event float crush_on;
+        input event float crush_bits;
+        input event float crush_rate;
+        input event float crush_dither;
+        input event float crush_mix;
+        
+        input stream float<2> audioIn;
+        output stream float<2> audioOut;
+        
+        float tapeAgeOn = 0.0f;
+        float tapeWowRate = 0.5f;
+        float tapeWowDepth = 0.3f;
+        float tapeFlutterRate = 8.0f;
+        float tapeFlutterDepth = 0.2f;
+        float tapeHiss = 0.1f;
+        float tapeDropout = 0.0f;
+        
+        float vinylOn = 0.0f;
+        float vinylCrackle = 0.2f;
+        float vinylDust = 0.1f;
+        float vinylSurface = 0.1f;
+        float vinylWarp = 0.1f;
+        
+        float radioOn = 0.0f;
+        float radioMode = 0.0f;
+        float radioDrift = 0.2f;
+        float radioStatic = 0.1f;
+        float radioBandwidth = 0.5f;
+        
+        float roomOn = 0.0f;
+        float roomSize = 1.0f;
+        float roomDamping = 0.5f;
+        float roomMix = 0.3f;
+        
+        float tubeOn = 0.0f;
+        float tubeDrive = 0.3f;
+        float tubeBias = 0.5f;
+        float tubeWarmth = 0.5f;
+        float tubeOutput = 0.7f;
+        
+        float crushOn = 0.0f;
+        float crushBits = 12.0f;
+        float crushRate = 44100.0f;
+        float crushDither = 0.0f;
+        float crushMix = 1.0f;
+        
+        float noiseState = 0.7531f;
+        float wowPhase = 0.0f;
+        float flutterPhase = 0.0f;
+        float warpPhase = 0.0f;
+        float driftPhase = 0.0f;
+        float cracklePhase = 0.0f;
+        float dustTimer = 0.0f;
+        float dropoutTimer = 0.0f;
+        float sampleHold = 0.0f;
+        int sampleCounter = 0;
+        
+        wrap<8192> delayPos;
+        float<2>[8192] delayBuffer;
+        float<2> filterState = float<2>(0.0f, 0.0f);
+        float<2> lowpassState = float<2>(0.0f, 0.0f);
+        
+        event tape_age_on (float v) { tapeAgeOn = v; }
+        event tape_age_wow_rate (float v) { tapeWowRate = clamp(v, 0.1f, 2.0f); }
+        event tape_age_wow_depth (float v) { tapeWowDepth = clamp(v, 0.0f, 1.0f); }
+        event tape_age_flutter_rate (float v) { tapeFlutterRate = clamp(v, 4.0f, 15.0f); }
+        event tape_age_flutter_depth (float v) { tapeFlutterDepth = clamp(v, 0.0f, 1.0f); }
+        event tape_age_hiss (float v) { tapeHiss = clamp(v, 0.0f, 1.0f); }
+        event tape_age_dropout (float v) { tapeDropout = clamp(v, 0.0f, 1.0f); }
+        
+        event vinyl_on (float v) { vinylOn = v; }
+        event vinyl_crackle (float v) { vinylCrackle = clamp(v, 0.0f, 1.0f); }
+        event vinyl_dust (float v) { vinylDust = clamp(v, 0.0f, 1.0f); }
+        event vinyl_surface (float v) { vinylSurface = clamp(v, 0.0f, 1.0f); }
+        event vinyl_warp (float v) { vinylWarp = clamp(v, 0.0f, 1.0f); }
+        
+        event radio_on (float v) { radioOn = v; }
+        event radio_mode (float v) { radioMode = clamp(v, 0.0f, 1.0f); }
+        event radio_drift (float v) { radioDrift = clamp(v, 0.0f, 1.0f); }
+        event radio_static (float v) { radioStatic = clamp(v, 0.0f, 1.0f); }
+        event radio_bandwidth (float v) { radioBandwidth = clamp(v, 0.0f, 1.0f); }
+        
+        event room_on (float v) { roomOn = v; }
+        event room_size (float v) { roomSize = clamp(v, 0.0f, 2.0f); }
+        event room_damping (float v) { roomDamping = clamp(v, 0.0f, 1.0f); }
+        event room_mix (float v) { roomMix = clamp(v, 0.0f, 1.0f); }
+        
+        event tube_on (float v) { tubeOn = v; }
+        event tube_drive (float v) { tubeDrive = clamp(v, 0.0f, 1.0f); }
+        event tube_bias (float v) { tubeBias = clamp(v, 0.0f, 1.0f); }
+        event tube_warmth (float v) { tubeWarmth = clamp(v, 0.0f, 1.0f); }
+        event tube_output (float v) { tubeOutput = clamp(v, 0.0f, 1.0f); }
+        
+        event crush_on (float v) { crushOn = v; }
+        event crush_bits (float v) { crushBits = clamp(v, 4.0f, 16.0f); }
+        event crush_rate (float v) { crushRate = clamp(v, 1000.0f, 44100.0f); }
+        event crush_dither (float v) { crushDither = clamp(v, 0.0f, 1.0f); }
+        event crush_mix (float v) { crushMix = clamp(v, 0.0f, 1.0f); }
+        
+        float whiteNoise()
+        {
+            noiseState = fmod(noiseState * 1664525.0f + 1013904223.0f, 4294967296.0f);
+            return (noiseState / 2147483648.0f) - 1.0f;
+        }
+        
+        float softClip(float x)
+        {
+            if (x > 1.0f) return 1.0f;
+            if (x < -1.0f) return -1.0f;
+            return x - (x * x * x) / 3.0f;
+        }
+        
+        float<2> processTapeAge(float<2> signal)
+        {
+            if (tapeAgeOn < 0.5f) return signal;
+            
+            wowPhase += tapeWowRate / float(processor.frequency);
+            if (wowPhase >= 1.0f) wowPhase -= 1.0f;
+            
+            flutterPhase += tapeFlutterRate / float(processor.frequency);
+            if (flutterPhase >= 1.0f) flutterPhase -= 1.0f;
+            
+            let wow = float(sin(wowPhase * twoPi)) * tapeWowDepth * 0.01f;
+            let flutter = float(sin(flutterPhase * twoPi)) * tapeFlutterDepth * 0.003f;
+            
+            let hiss = whiteNoise() * tapeHiss * 0.05f;
+            
+            dropoutTimer += 1.0f / float(processor.frequency);
+            var dropout = 1.0f;
+            if (dropoutTimer > 2.0f)
+            {
+                if (whiteNoise() > (1.0f - tapeDropout * 0.01f))
+                    dropout = 0.0f;
+                dropoutTimer = 0.0f;
+            }
+            
+            return float<2>((signal[0] + hiss) * dropout, (signal[1] + hiss) * dropout);
+        }
+        
+        float<2> processVinyl(float<2> signal)
+        {
+            if (vinylOn < 0.5f) return signal;
+            
+            cracklePhase += 1.0f / float(processor.frequency);
+            var crackle = 0.0f;
+            if (cracklePhase > 0.01f && whiteNoise() > (1.0f - vinylCrackle * 0.1f))
+            {
+                crackle = whiteNoise() * 0.3f;
+                cracklePhase = 0.0f;
+            }
+            
+            dustTimer += 1.0f / float(processor.frequency);
+            var pop = 0.0f;
+            if (dustTimer > 0.5f && whiteNoise() > (1.0f - vinylDust * 0.05f))
+            {
+                pop = whiteNoise() * 0.5f;
+                dustTimer = 0.0f;
+            }
+            
+            let surface = whiteNoise() * vinylSurface * 0.02f;
+            
+            warpPhase += 0.3f / float(processor.frequency);
+            if (warpPhase >= 1.0f) warpPhase -= 1.0f;
+            let warp = float(sin(warpPhase * twoPi)) * vinylWarp * 0.005f;
+            
+            return float<2>(signal[0] + crackle + pop + surface, signal[1] + crackle + pop + surface);
+        }
+        
+        float<2> processRadio(float<2> signal)
+        {
+            if (radioOn < 0.5f) return signal;
+            
+            driftPhase += 0.2f / float(processor.frequency);
+            if (driftPhase >= 1.0f) driftPhase -= 1.0f;
+            let drift = float(sin(driftPhase * twoPi)) * radioDrift * 0.01f;
+            
+            let staticNoise = whiteNoise() * radioStatic * 0.1f;
+            
+            let cutoff = 300.0f + radioBandwidth * 4700.0f;
+            let f = cutoff / float(processor.frequency);
+            filterState = filterState + f * (signal - filterState);
+            
+            return float<2>(filterState[0] + staticNoise, filterState[1] + staticNoise);
+        }
+        
+        float<2> processRoom(float<2> signal)
+        {
+            if (roomOn < 0.5f) return signal;
+            
+            let delayTime = int(roomSize * 2000.0f + 500.0f);
+            let readPos = (delayPos - delayTime + 8192) % 8192;
+            
+            delayBuffer[delayPos] = signal + delayBuffer[readPos] * (0.3f - roomDamping * 0.2f);
+            delayPos++;
+            
+            let wet = delayBuffer[readPos];
+            return signal * (1.0f - roomMix) + wet * roomMix;
+        }
+        
+        float<2> processTube(float<2> signal)
+        {
+            if (tubeOn < 0.5f) return signal;
+            
+            let drive = 1.0f + tubeDrive * 4.0f;
+            let biasAmount = (tubeBias - 0.5f) * 0.3f;
+            
+            var left = signal[0] * drive + biasAmount;
+            var right = signal[1] * drive + biasAmount;
+            
+            left = softClip(left);
+            right = softClip(right);
+            
+            let warmthFreq = 200.0f / float(processor.frequency);
+            lowpassState = lowpassState + warmthFreq * (float<2>(left, right) - lowpassState);
+            
+            let warmed = lowpassState * tubeWarmth + float<2>(left, right) * (1.0f - tubeWarmth * 0.5f);
+            
+            return warmed * tubeOutput;
+        }
+        
+        float<2> processCrush(float<2> signal)
+        {
+            if (crushOn < 0.5f) return signal;
+            
+            let downsampleRatio = int(float(processor.frequency) / crushRate);
+            
+            if (sampleCounter >= downsampleRatio)
+            {
+                sampleCounter = 0;
+                
+                let levels = pow(2.0f, crushBits);
+                let dither = whiteNoise() * crushDither * (1.0f / levels);
+                
+                sampleHold = floor((signal[0] + dither) * levels) / levels;
+            }
+            sampleCounter++;
+            
+            let crushed = float<2>(sampleHold, sampleHold);
+            return signal * (1.0f - crushMix) + crushed * crushMix;
+        }
+        
+        void main()
+        {
+            loop
+            {
+                var signal = audioIn;
+                
+                signal = processTapeAge(signal);
+                signal = processVinyl(signal);
+                signal = processRadio(signal);
+                signal = processRoom(signal);
+                signal = processTube(signal);
+                signal = processCrush(signal);
+                
+                audioOut <- signal;
+                advance();
+            }
+        }
+    }
+}

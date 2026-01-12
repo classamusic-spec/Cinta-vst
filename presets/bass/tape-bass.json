@@ -1,0 +1,31 @@
+{
+    "name": "Tape Bass",
+    "category": "bass",
+    "tags": ["tape", "warm", "saturated", "vintage"],
+    "description": "Warm saturated bass with tape character - vintage and full",
+    "parameters": {
+        "vibe": 0.6,
+        "warmth": 0.8,
+        "space": 0.2,
+        "movement": 0.15,
+        "grit": 0.2,
+        "fm_on": 0,
+        "tape_on": 1,
+        "tape_sound": 3,
+        "tape_speed": 0.95,
+        "tape_wow": 0.25,
+        "tape_flutter": 0.15,
+        "tape_level": 0.85,
+        "analog_on": 0,
+        "tube_on": 1,
+        "tube_drive": 0.5,
+        "tube_warmth": 0.8,
+        "tube_output": 0.8,
+        "amp_attack": 0.01,
+        "amp_decay": 0.5,
+        "amp_sustain": 0.7,
+        "amp_release": 0.6,
+        "master_volume": 0.75,
+        "master_highcut": 2500
+    }
+}

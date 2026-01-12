@@ -1,0 +1,33 @@
+{
+    "name": "FM Bass",
+    "category": "bass",
+    "tags": ["fm", "dx", "plucky", "bright"],
+    "description": "DX-style plucky FM bass - bright attack with sustain",
+    "parameters": {
+        "vibe": 0.15,
+        "warmth": 0.3,
+        "space": 0.2,
+        "movement": 0.1,
+        "grit": 0.0,
+        "fm_on": 1,
+        "fm_ratio": 1.0,
+        "fm_depth": 0.8,
+        "fm_feedback": 0.4,
+        "fm_carrier_wave": 0,
+        "fm_mod_wave": 0,
+        "fm_level": 0.85,
+        "fm_pan": 0,
+        "tape_on": 0,
+        "analog_on": 0,
+        "amp_attack": 0.001,
+        "amp_decay": 0.4,
+        "amp_sustain": 0.5,
+        "amp_release": 0.3,
+        "filter_attack": 0.001,
+        "filter_decay": 0.3,
+        "filter_sustain": 0.4,
+        "filter_release": 0.25,
+        "master_volume": 0.8,
+        "master_highcut": 4000
+    }
+}

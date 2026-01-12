@@ -1,0 +1,33 @@
+{
+    "name": "DX Tines",
+    "category": "keys",
+    "tags": ["fm", "electric piano", "80s", "r&b"],
+    "description": "DX7-style electric piano tines - perfect for 80s R&B and modern production",
+    "parameters": {
+        "vibe": 0.2,
+        "warmth": 0.4,
+        "space": 0.35,
+        "movement": 0.15,
+        "grit": 0.0,
+        "fm_on": 1,
+        "fm_ratio": 2.0,
+        "fm_depth": 0.45,
+        "fm_feedback": 0.15,
+        "fm_carrier_wave": 0,
+        "fm_mod_wave": 0,
+        "fm_level": 0.75,
+        "fm_pan": 0,
+        "tape_on": 0,
+        "analog_on": 0,
+        "amp_attack": 0.003,
+        "amp_decay": 1.2,
+        "amp_sustain": 0.4,
+        "amp_release": 0.8,
+        "filter_attack": 0.01,
+        "filter_decay": 0.5,
+        "filter_sustain": 0.5,
+        "filter_release": 0.5,
+        "master_volume": 0.72,
+        "master_highcut": 10000
+    }
+}

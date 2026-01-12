@@ -1,0 +1,24 @@
+{
+    "CmajorVersion": 1,
+    "ID": "com.cinta.vintage-texture-machine",
+    "version": "1.0.0",
+    "name": "CINTA",
+    "description": "Vintage Texture Machine for Latin Music Production",
+    "category": "synth",
+    "manufacturer": "CINTA",
+    "isInstrument": true,
+    "source": [
+        "src/CINTA.cmajor",
+        "src/FMEngine.cmajor",
+        "src/TapeEngine.cmajor",
+        "src/AnalogEngine.cmajor",
+        "src/TextureRack.cmajor",
+        "src/ArpMachine.cmajor"
+    ],
+    "view": {
+        "src": "ui/index.html",
+        "width": 1400,
+        "height": 850,
+        "resizable": true
+    }
+}

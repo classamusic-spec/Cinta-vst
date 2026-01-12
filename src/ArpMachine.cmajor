@@ -1,0 +1,274 @@
+namespace ArpMachine
+{
+    processor Arpeggiator
+    {
+        input event float arp_on;
+        input event float arp_melody_type;
+        input event float arp_rhythm_type;
+        input event float arp_scale;
+        input event float arp_key;
+        input event float arp_rate;
+        input event float arp_swing;
+        input event float arp_gate;
+        input event float arp_octaves;
+        input event float arp_direction;
+        input event float arp_randomize_mode;
+        input event float arp_complexity;
+        input event float arp_humanize;
+        
+        input event (std::notes::NoteOn, std::notes::NoteOff) midiIn;
+        output event (std::notes::NoteOn, std::notes::NoteOff) midiOut;
+        
+        float arpOn = 0.0f;
+        float melodyType = 0.0f;
+        float rhythmType = 0.0f;
+        float scaleType = 0.0f;
+        float key = 0.0f;
+        float rate = 4.0f;
+        float swing = 0.0f;
+        float gate = 0.75f;
+        float octaves = 1.0f;
+        float direction = 0.0f;
+        float randomizeMode = 0.0f;
+        float complexity = 5.0f;
+        float humanize = 0.0f;
+        
+        bool noteHeld = false;
+        int heldNote = 60;
+        int stepCounter = 0;
+        float phaseAccum = 0.0f;
+        bool currentNoteOn = false;
+        int currentPlayingNote = 0;
+        float randomSeed = 0.12345f;
+        
+        int[16] melodyPattern = (1, 0, 5, 0, 1, 0, 5, 0, 1, 0, 5, 0, 1, 0, 5, 0);
+        int[16] rhythmPattern = (100, 0, 0, 80, 0, 0, 100, 0, 0, 80, 0, 0, 100, 0, 0, 80);
+        
+        int[16] dakitiMelody = (1, 0, 7, 0, 1, 0, 7, 0, 1, 0, 7, 0, 1, 0, 7, 0);
+        int[16] callaitaMelody = (5, 0, 4, 0, 3, 0, 1, 0, 5, 0, 4, 0, 3, 0, 1, 0);
+        int[16] tusaMelody = (1, 0, 3, 0, 5, 0, 0, 0, 1, 0, 3, 0, 5, 0, 0, 0);
+        int[16] yonaguniMelody = (1, 0, 5, 0, 7, 0, 5, 0, 1, 0, 5, 0, 7, 0, 5, 0);
+        int[16] moscowMelody = (1, 0, 3, 0, 5, 0, 6, 0, 5, 0, 3, 0, 1, 0, 0, 0);
+        int[16] portoBonitoMelody = (1, 1, 0, 7, 0, 5, 0, 0, 1, 1, 0, 7, 0, 5, 0, 0);
+        int[16] nocheMelody = (5, 0, 6, 0, 7, 0, 1, 7, 5, 0, 6, 0, 7, 0, 1, 7);
+        int[16] darkBellMelody = (1, 0, 2, 0, 1, 0, 7, 0, 1, 0, 2, 0, 1, 0, 7, 0);
+        int[16] fluteTrapMelody = (1, 0, 3, 0, 4, 0, 5, 0, 7, 0, 5, 0, 4, 0, 3, 0);
+        int[16] hardBellMelody = (1, 1, 0, 3, 0, 1, 0, 0, 1, 1, 0, 3, 0, 1, 0, 0);
+        int[16] sadTrapMelody = (1, 0, 3, 0, 4, 0, 3, 0, 1, 0, 0, 0, 0, 0, 0, 0);
+        int[16] summerHitMelody = (1, 0, 3, 0, 5, 0, 6, 0, 5, 0, 3, 0, 1, 0, 0, 0);
+        int[16] danceHookMelody = (1, 0, 5, 0, 1, 0, 5, 0, 7, 0, 5, 0, 1, 0, 0, 0);
+        int[16] radioReadyMelody = (1, 0, 2, 0, 3, 0, 2, 0, 1, 0, 0, 0, 0, 0, 0, 0);
+        
+        int[16] classicDembow = (100, 0, 0, 80, 0, 0, 100, 0, 0, 80, 0, 0, 100, 0, 0, 80);
+        int[16] modernDembow = (100, 0, 60, 90, 0, 60, 100, 0, 60, 90, 0, 60, 100, 0, 60, 90);
+        int[16] halfTimeDembow = (100, 0, 0, 0, 0, 0, 80, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        int[16] dembowRomantico = (80, 0, 0, 60, 0, 0, 70, 0, 0, 60, 0, 0, 80, 0, 0, 60);
+        int[16] perreoIntenso = (100, 0, 100, 0, 80, 0, 100, 0, 100, 0, 80, 0, 100, 0, 100, 0);
+        int[16] perreoSuave = (70, 0, 0, 60, 0, 0, 70, 0, 0, 60, 0, 0, 70, 0, 0, 60);
+        int[16] flowCalle = (100, 50, 0, 100, 0, 50, 100, 0, 0, 100, 50, 0, 100, 0, 50, 0);
+        int[16] bounce808 = (100, 0, 0, 0, 0, 0, 0, 100, 0, 0, 100, 0, 0, 0, 0, 0);
+        int[16] hiHatRolls = (60, 60, 60, 80, 60, 60, 60, 80, 60, 60, 100, 80, 60, 60, 60, 80);
+        int[16] trapLatino = (100, 0, 60, 0, 80, 0, 60, 0, 100, 0, 60, 0, 80, 60, 0, 60);
+        int[16] tresilloRhythm = (100, 0, 0, 100, 0, 0, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        int[16] claveRhythm = (100, 0, 0, 100, 0, 0, 0, 100, 0, 0, 100, 0, 100, 0, 0, 0);
+        
+        int[7] reggaetonMinor = (0, 2, 3, 5, 7, 8, 10);
+        int[7] reggaetonMajor = (0, 2, 4, 5, 7, 9, 11);
+        int[7] trapMinor = (0, 2, 3, 5, 7, 8, 11);
+        int[5] latinPop = (0, 2, 4, 7, 9);
+        int[7] sadBoy = (0, 2, 3, 5, 7, 9, 10);
+        int[5] perreoScale = (0, 3, 5, 7, 10);
+        int[7] romantic = (0, 2, 4, 5, 7, 9, 11);
+        int[7] callejero = (0, 1, 4, 5, 7, 8, 10);
+        
+        event arp_on (float v) { arpOn = v; }
+        event arp_melody_type (float v) 
+        { 
+            melodyType = clamp(v, 0.0f, 13.0f);
+            loadMelodyPattern(int(melodyType));
+        }
+        event arp_rhythm_type (float v) 
+        { 
+            rhythmType = clamp(v, 0.0f, 11.0f);
+            loadRhythmPattern(int(rhythmType));
+        }
+        event arp_scale (float v) { scaleType = clamp(v, 0.0f, 7.0f); }
+        event arp_key (float v) { key = clamp(v, 0.0f, 11.0f); }
+        event arp_rate (float v) { rate = clamp(v, 0.0f, 8.0f); }
+        event arp_swing (float v) { swing = clamp(v, 0.0f, 100.0f); }
+        event arp_gate (float v) { gate = clamp(v, 1.0f, 100.0f); }
+        event arp_octaves (float v) { octaves = clamp(v, 1.0f, 4.0f); }
+        event arp_direction (float v) { direction = clamp(v, 0.0f, 3.0f); }
+        event arp_randomize_mode (float v) { randomizeMode = clamp(v, 0.0f, 5.0f); }
+        event arp_complexity (float v) { complexity = clamp(v, 1.0f, 10.0f); }
+        event arp_humanize (float v) { humanize = clamp(v, 0.0f, 1.0f); }
+        
+        event midiIn (std::notes::NoteOn e)
+        {
+            heldNote = int(e.pitch);
+            noteHeld = true;
+            
+            if (arpOn < 0.5f)
+                midiOut <- e;
+        }
+        
+        event midiIn (std::notes::NoteOff e)
+        {
+            noteHeld = false;
+            
+            if (currentNoteOn)
+            {
+                midiOut <- std::notes::NoteOff(currentPlayingNote);
+                currentNoteOn = false;
+            }
+            
+            if (arpOn < 0.5f)
+                midiOut <- e;
+        }
+        
+        void loadMelodyPattern(int type)
+        {
+            if (type == 0) melodyPattern = dakitiMelody;
+            else if (type == 1) melodyPattern = callaitaMelody;
+            else if (type == 2) melodyPattern = tusaMelody;
+            else if (type == 3) melodyPattern = yonaguniMelody;
+            else if (type == 4) melodyPattern = moscowMelody;
+            else if (type == 5) melodyPattern = portoBonitoMelody;
+            else if (type == 6) melodyPattern = nocheMelody;
+            else if (type == 7) melodyPattern = darkBellMelody;
+            else if (type == 8) melodyPattern = fluteTrapMelody;
+            else if (type == 9) melodyPattern = hardBellMelody;
+            else if (type == 10) melodyPattern = sadTrapMelody;
+            else if (type == 11) melodyPattern = summerHitMelody;
+            else if (type == 12) melodyPattern = danceHookMelody;
+            else melodyPattern = radioReadyMelody;
+        }
+        
+        void loadRhythmPattern(int type)
+        {
+            if (type == 0) rhythmPattern = classicDembow;
+            else if (type == 1) rhythmPattern = modernDembow;
+            else if (type == 2) rhythmPattern = halfTimeDembow;
+            else if (type == 3) rhythmPattern = dembowRomantico;
+            else if (type == 4) rhythmPattern = perreoIntenso;
+            else if (type == 5) rhythmPattern = perreoSuave;
+            else if (type == 6) rhythmPattern = flowCalle;
+            else if (type == 7) rhythmPattern = bounce808;
+            else if (type == 8) rhythmPattern = hiHatRolls;
+            else if (type == 9) rhythmPattern = trapLatino;
+            else if (type == 10) rhythmPattern = tresilloRhythm;
+            else rhythmPattern = claveRhythm;
+        }
+        
+        float random()
+        {
+            randomSeed = fmod(randomSeed * 1664525.0f + 1013904223.0f, 4294967296.0f);
+            return randomSeed / 4294967296.0f;
+        }
+        
+        int getScaleNote(int scaleDegree, int scale)
+        {
+            if (scaleDegree == 0) return 0;
+            
+            let degree = (scaleDegree - 1) % 7;
+            let octaveOffset = ((scaleDegree - 1) / 7) * 12;
+            
+            if (scale == 0)
+                return reggaetonMinor[degree] + octaveOffset;
+            else if (scale == 1)
+                return reggaetonMajor[degree] + octaveOffset;
+            else if (scale == 2)
+                return trapMinor[degree] + octaveOffset;
+            else if (scale == 3)
+                return latinPop[degree % 5] + octaveOffset;
+            else if (scale == 4)
+                return sadBoy[degree] + octaveOffset;
+            else if (scale == 5)
+                return perreoScale[degree % 5] + octaveOffset;
+            else if (scale == 6)
+                return romantic[degree] + octaveOffset;
+            else
+                return callejero[degree] + octaveOffset;
+        }
+        
+        float getRateInStepsPerSecond()
+        {
+            if (rate < 0.5f) return 1.0f;
+            else if (rate < 1.5f) return 2.0f;
+            else if (rate < 2.5f) return 4.0f;
+            else if (rate < 3.5f) return 8.0f;
+            else if (rate < 4.5f) return 16.0f;
+            else if (rate < 5.5f) return 32.0f;
+            else if (rate < 6.5f) return 4.0f * 1.333f;
+            else if (rate < 7.5f) return 8.0f * 1.333f;
+            else return 16.0f * 1.333f;
+        }
+        
+        void main()
+        {
+            loop
+            {
+                if (arpOn > 0.5f && noteHeld)
+                {
+                    let stepsPerSecond = getRateInStepsPerSecond();
+                    let samplesPerStep = float(processor.frequency) / stepsPerSecond;
+                    
+                    let swingAmount = (stepCounter % 2 == 1) ? (swing / 100.0f * 0.5f) : 0.0f;
+                    let adjustedSamplesPerStep = samplesPerStep * (1.0f + swingAmount);
+                    
+                    phaseAccum += 1.0f;
+                    
+                    if (phaseAccum >= adjustedSamplesPerStep)
+                    {
+                        phaseAccum = 0.0f;
+                        
+                        if (currentNoteOn)
+                        {
+                            midiOut <- std::notes::NoteOff(currentPlayingNote);
+                            currentNoteOn = false;
+                        }
+                        
+                        let step = stepCounter % 16;
+                        let velocity = rhythmPattern[step];
+                        
+                        if (velocity > 0)
+                        {
+                            let scaleDegree = melodyPattern[step];
+                            
+                            if (scaleDegree > 0)
+                            {
+                                let rootKey = int(key);
+                                let scale = int(scaleType);
+                                let scaleOffset = getScaleNote(scaleDegree, scale);
+                                
+                                currentPlayingNote = rootKey + 48 + scaleOffset;
+                                
+                                while (currentPlayingNote < 36)
+                                    currentPlayingNote += 12;
+                                while (currentPlayingNote > 96)
+                                    currentPlayingNote -= 12;
+                                
+                                midiOut <- std::notes::NoteOn(currentPlayingNote);
+                                currentNoteOn = true;
+                            }
+                        }
+                        
+                        stepCounter++;
+                        if (stepCounter >= 16)
+                            stepCounter = 0;
+                    }
+                    
+                    let gatePercent = gate / 100.0f;
+                    let gateTime = adjustedSamplesPerStep * gatePercent;
+                    if (currentNoteOn && phaseAccum >= gateTime)
+                    {
+                        midiOut <- std::notes::NoteOff(currentPlayingNote);
+                        currentNoteOn = false;
+                    }
+                }
+                
+                advance();
+            }
+        }
+    }
+}
