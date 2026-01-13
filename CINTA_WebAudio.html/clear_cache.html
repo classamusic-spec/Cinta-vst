@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear CINTA Cache</title>
+</head>
+<body>
+    <h1>CINTA Cache Clearer</h1>
+    <p>This page will help clear all cached data for CINTA.</p>
+    
+    <button id="clearCache">Clear All Cache</button>
+    <button id="unregisterWorkers">Unregister Service Workers</button>
+    <button id="clearIndexedDB">Clear IndexedDB</button>
+    <button id="reloadMain">Reload Main App</button>
+    
+    <div id="log" style="margin-top: 20px; font-family: monospace; white-space: pre;"></div>
+    
+    <script>
+        const log = document.getElementById('log');
+        
+        function addLog(msg) {
+            log.textContent += msg + '\n';
+            console.log(msg);
+        }
+        
+        document.getElementById('clearCache').addEventListener('click', async () => {
+            addLog('Clearing cache...');
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                addLog(`Found ${cacheNames.length} caches`);
+                for (const name of cacheNames) {
+                    await caches.delete(name);
+                    addLog(`Deleted cache: ${name}`);
+                }
+                addLog('✅ All caches cleared');
+            } else {
+                addLog('❌ Cache API not available');
+            }
+        });
+        
+        document.getElementById('unregisterWorkers').addEventListener('click', async () => {
+            addLog('Unregistering service workers...');
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                addLog(`Found ${registrations.length} service workers`);
+                for (const registration of registrations) {
+                    await registration.unregister();
+                    addLog(`Unregistered: ${registration.scope}`);
+                }
+                addLog('✅ All service workers unregistered');
+            } else {
+                addLog('❌ Service Worker API not available');
+            }
+        });
+        
+        document.getElementById('clearIndexedDB').addEventListener('click', async () => {
+            addLog('Clearing IndexedDB...');
+            if ('indexedDB' in window) {
+                const databases = await indexedDB.databases();
+                addLog(`Found ${databases.length} databases`);
+                for (const db of databases) {
+                    indexedDB.deleteDatabase(db.name);
+                    addLog(`Deleted database: ${db.name}`);
+                }
+                addLog('✅ All IndexedDB databases cleared');
+            } else {
+                addLog('❌ IndexedDB not available');
+            }
+        });
+        
+        document.getElementById('reloadMain').addEventListener('click', () => {
+            addLog('Reloading main app...');
+            window.location.href = '/index.html?nocache=' + Date.now();
+        });
+        
+        addLog('Ready to clear cache. Click buttons above.');
+        addLog('After clearing, close ALL browser tabs and restart the browser.');
+    </script>
+</body>
+</html>

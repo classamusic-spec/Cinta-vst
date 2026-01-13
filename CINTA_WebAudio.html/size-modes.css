@@ -112,12 +112,46 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   MODE 1: FULL (1400x850) - Everything visible
+   MODE 1: FULL (1400x700) - Everything visible, compact layout
    ═══════════════════════════════════════════════════════════════ */
 
 .synth-container.size-full {
     width: 1400px;
-    height: 850px;
+    height: 700px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+}
+
+.size-full .header {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+}
+
+.size-full .tape-deck {
+    height: 80px;
+    margin: 10px 0;
+}
+
+.size-full .engines-row {
+    margin-bottom: 10px;
+}
+
+.size-full .engine-panel {
+    padding: 10px;
+}
+
+.size-full .texture-rack {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+}
+
+.size-full .arp-machine {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+}
+
+.size-full .bottom-controls {
+    padding: 10px 15px;
 }
 
 .size-full .engine-section,
@@ -132,13 +166,15 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   MODE 2: COMPACT (900x500) - Engines + Macros + Arp pattern
+   MODE 2: COMPACT (900x600) - Engines + Macros + Arp + Keyboard visible
    ═══════════════════════════════════════════════════════════════ */
 
 .synth-container.size-compact {
     width: 900px;
-    height: 500px;
-    padding: 20px;
+    height: 600px;
+    max-height: calc(100vh - 140px);
+    padding: 15px;
+    overflow-y: auto;
 }
 
 .size-compact .header {

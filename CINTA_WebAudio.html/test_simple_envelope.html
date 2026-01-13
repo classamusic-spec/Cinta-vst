@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CINTA Envelope Test</title>
+</head>
+<body>
+    <h1>CINTA Envelope Debug Test</h1>
+    <button id="testNote">Play Test Note (C4)</button>
+    <button id="stopNote">Stop Note</button>
+    <div id="log" style="font-family: monospace; white-space: pre; margin-top: 20px;"></div>
+    
+    <script>
+        let patchConnection = null;
+        let logDiv = document.getElementById('log');
+        
+        function log(msg) {
+            logDiv.textContent += msg + '\n';
+            console.log(msg);
+        }
+        
+        async function init() {
+            log('Loading CINTA patch...');
+            const patch = await import('../CINTA.cmajorpatch');
+            
+            const audioContext = new AudioContext();
+            patchConnection = await patch.createAudioWorkletNodePatchConnection(audioContext, "cmaj-worklet-processor");
+            
+            await patchConnection.connectDefaultAudioAndMIDI(audioContext);
+            await audioContext.resume();
+            
+            log('✅ Patch loaded and connected');
+            log('Setting simple envelope values:');
+            log('  amp_attack: 0.01');
+            log('  amp_decay: 0.1');
+            log('  amp_sustain: 0.5');
+            log('  amp_release: 0.2');
+            
+            // Set simple envelope values
+            patchConnection.sendParameterValue('amp_attack', 0.01);
+            patchConnection.sendParameterValue('amp_decay', 0.1);
+            patchConnection.sendParameterValue('amp_sustain', 0.5);
+            patchConnection.sendParameterValue('amp_release', 0.2);
+            
+            // Enable FM engine
+            patchConnection.sendParameterValue('fm_on', 1.0);
+            patchConnection.sendParameterValue('fm_level', 0.8);
+            
+            log('✅ Ready to test');
+        }
+        
+        document.getElementById('testNote').addEventListener('click', () => {
+            if (!patchConnection) return;
+            log('▶️ Sending noteOn: 60 (C4)');
+            patchConnection.sendMIDIInputEvent('noteOn', { pitch: 60, velocity: 1.0 });
+        });
+        
+        document.getElementById('stopNote').addEventListener('click', () => {
+            if (!patchConnection) return;
+            log('⏹️ Sending noteOff: 60 (C4)');
+            patchConnection.sendMIDIInputEvent('noteOff', { pitch: 60 });
+            log('⏱️ Note should release in ~0.2 seconds...');
+        });
+        
+        init();
+    </script>
+</body>
+</html>

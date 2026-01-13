@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CINTA - Vintage Texture Machine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="synth-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1 class="logo">CINTA</h1>
+                <p class="tagline">Vintage Texture Machine</p>
+            </div>
+            <div class="header-center">
+                <select class="preset-selector">
+                    <option>Classic Dembow</option>
+                    <option>Warm Perreo</option>
+                    <option>Lo-Fi Trap</option>
+                    <option>Tape Dreams</option>
+                    <option>Radio Nostalgia</option>
+                </select>
+                <button class="preset-btn">◀</button>
+                <button class="preset-btn">▶</button>
+                <button class="preset-btn save-btn">SAVE</button>
+            </div>
+            <div class="header-right quick-controls">
+                <div class="quick-knob">
+                    <div class="knob" data-param="vibe" data-min="0" data-max="1" data-value="0.5"></div>
+                    <label>VIBE</label>
+                </div>
+                <div class="quick-knob">
+                    <div class="knob" data-param="warmth" data-min="0" data-max="1" data-value="0.5"></div>
+                    <label>WARMTH</label>
+                </div>
+                <div class="quick-knob">
+                    <div class="knob" data-param="space" data-min="0" data-max="1" data-value="0.3"></div>
+                    <label>SPACE</label>
+                </div>
+                <div class="quick-knob">
+                    <div class="knob" data-param="movement" data-min="0" data-max="1" data-value="0.3"></div>
+                    <label>MOVEMENT</label>
+                </div>
+                <div class="quick-knob">
+                    <div class="knob" data-param="grit" data-min="0" data-max="1" data-value="0.2"></div>
+                    <label>GRIT</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sound Engines -->
+        <div class="engines-section">
+            <div class="engine-panel">
+                <div class="engine-header">
+                    <h2>FM ENGINE</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" data-param="fm_on" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="engine-controls">
+                    <div class="control-group">
+                        <div class="knob-control">
+                            <div class="knob" data-param="fm_ratio" data-min="0.5" data-max="16" data-value="2"></div>
+                            <label>Ratio</label>
+                        </div>
+                        <div class="knob-control">
+                            <div class="knob" data-param="fm_depth" data-min="0" data-max="1" data-value="0.5"></div>
+                            <label>Depth</label>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="knob-control">
+                            <div class="knob" data-param="fm_feedback" data-min="0" data-max="1" data-value="0"></div>
+                            <label>Feedback</label>
+                        </div>
+                        <div class="knob-control">
+                            <div class="knob" data-param="fm_level" data-min="0" data-max="1" data-value="0.7"></div>
+                            <label>Level</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="engine-panel">
+                <div class="engine-header">
+                    <h2>TAPE ENGINE</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" data-param="tape_on" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="engine-controls">
+                    <div class="control-group">
+                        <div class="knob-control">
+                            <div class="knob discrete" data-param="tape_sound" data-min="0" data-max="4" data-value="0"></div>
+                            <label>Sound</label>
+                            <span class="value-display">Strings</span>
+                        </div>
+                        <div class="knob-control">
+                            <div class="knob" data-param="tape_speed" data-min="0.5" data-max="2" data-value="1"></div>
+                            <label>Speed</label>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="knob-control">
+                            <div class="knob" data-param="tape_wow" data-min="0" data-max="1" data-value="0.2"></div>
+                            <label>Wow</label>
+                        </div>
+                        <div class="knob-control">
+                            <div class="knob" data-param="tape_flutter" data-min="0" data-max="1" data-value="0.1"></div>
+                            <label>Flutter</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="engine-panel">
+                <div class="engine-header">
+                    <h2>ANALOG ENGINE</h2>
+                    <label class="toggle-switch">
+                        <input type="checkbox" data-param="analog_on" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="engine-controls">
+                    <div class="control-group">
+                        <div class="knob-control">
+                            <div class="knob discrete" data-param="analog_osc1_wave" data-min="0" data-max="3" data-value="0"></div>
+                            <label>Wave 1</label>
+                        </div>
+                        <div class="knob-control">
+                            <div class="knob discrete" data-param="analog_osc2_wave" data-min="0" data-max="3" data-value="0"></div>
+                            <label>Wave 2</label>
+                        </div>
+                        <div class="knob-control">
+                            <div class="knob" data-param="analog_osc2_detune" data-min="-100" data-max="100" data-value="0"></div>
+                            <label>Detune</label>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="knob-control">
+                            <div class="knob" data-param="analog_pulse_width" data-min="0.1" data-max="0.9" data-value="0.5"></div>
+                            <label>PW</label>
+                        </div>
+                        <div class="knob-control">
+                            <div class="knob" data-param="analog_filter_cutoff" data-min="20" data-max="20000" data-value="2000"></div>
+                            <label>Filter</label>
+                        </div>
+                        <div class="knob-control">
+                            <div class="knob" data-param="analog_filter_resonance" data-min="0" data-max="1" data-value="0.3"></div>
+                            <label>Reso</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Texture Rack -->
+        <div class="texture-rack">
+            <h2 class="section-title">TEXTURE RACK</h2>
+            <div class="texture-units">
+                <div class="texture-unit">
+                    <div class="texture-header">
+                        <h3>TAPE AGE</h3>
+                        <label class="toggle-switch small">
+                            <input type="checkbox" data-param="tape_age_on">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="texture-controls">
+                        <div class="knob small" data-param="tape_age_wow_depth" data-min="0" data-max="1" data-value="0.3"></div>
+                        <label>Wow</label>
+                    </div>
+                </div>
+
+                <div class="texture-unit">
+                    <div class="texture-header">
+                        <h3>VINYL</h3>
+                        <label class="toggle-switch small">
+                            <input type="checkbox" data-param="vinyl_on">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="texture-controls">
+                        <div class="knob small" data-param="vinyl_crackle" data-min="0" data-max="1" data-value="0.2"></div>
+                        <label>Crackle</label>
+                    </div>
+                </div>
+
+                <div class="texture-unit">
+                    <div class="texture-header">
+                        <h3>RADIO</h3>
+                        <label class="toggle-switch small">
+                            <input type="checkbox" data-param="radio_on">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="texture-controls">
+                        <div class="knob small" data-param="radio_bandwidth" data-min="0" data-max="1" data-value="0.5"></div>
+                        <label>Band</label>
+                    </div>
+                </div>
+
+                <div class="texture-unit">
+                    <div class="texture-header">
+                        <h3>ROOM</h3>
+                        <label class="toggle-switch small">
+                            <input type="checkbox" data-param="room_on">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="texture-controls">
+                        <div class="knob small" data-param="room_mix" data-min="0" data-max="1" data-value="0.3"></div>
+                        <label>Mix</label>
+                    </div>
+                </div>
+
+                <div class="texture-unit">
+                    <div class="texture-header">
+                        <h3>TUBE</h3>
+                        <label class="toggle-switch small">
+                            <input type="checkbox" data-param="tube_on">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="texture-controls">
+                        <div class="knob small" data-param="tube_drive" data-min="0" data-max="1" data-value="0.3"></div>
+                        <label>Drive</label>
+                    </div>
+                </div>
+
+                <div class="texture-unit">
+                    <div class="texture-header">
+                        <h3>CRUSH</h3>
+                        <label class="toggle-switch small">
+                            <input type="checkbox" data-param="crush_on">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="texture-controls">
+                        <div class="knob small" data-param="crush_bits" data-min="4" data-max="16" data-value="12"></div>
+                        <label>Bits</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Arp Machine -->
+        <div class="arp-section">
+            <div class="arp-header">
+                <h2 class="section-title">🎹 ARP MACHINE</h2>
+                <label class="toggle-switch">
+                    <input type="checkbox" data-param="arp_on">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="arp-controls">
+                <div class="arp-top-row">
+                    <div class="selector-group">
+                        <label>MELODY</label>
+                        <select data-param="arp_melody_type">
+                            <option value="0">Dákiti Style</option>
+                            <option value="1">Callaíta Style</option>
+                            <option value="2">Tusa Style</option>
+                            <option value="3">Yonaguni Style</option>
+                            <option value="4">Moscow Mule</option>
+                            <option value="5">Me Porto Bonito</option>
+                            <option value="6">La Noche de Anoche</option>
+                            <option value="7">Dark Bell</option>
+                            <option value="8">Flute Trap</option>
+                            <option value="9">Hard Bell</option>
+                            <option value="10">Sad Trap</option>
+                            <option value="11">Summer Hit</option>
+                            <option value="12">Dance Hook</option>
+                            <option value="13">Radio Ready</option>
+                        </select>
+                    </div>
+                    <div class="selector-group">
+                        <label>RHYTHM</label>
+                        <select data-param="arp_rhythm_type">
+                            <option value="0">Classic Dembow</option>
+                            <option value="1">Modern Dembow</option>
+                            <option value="2">Half-Time Dembow</option>
+                            <option value="3">Dembow Romántico</option>
+                            <option value="4">Perreo Intenso</option>
+                            <option value="5">Perreo Suave</option>
+                            <option value="6">Flow Calle</option>
+                            <option value="7">808 Bounce</option>
+                            <option value="8">Hi-Hat Rolls</option>
+                            <option value="9">Trap Latino</option>
+                            <option value="10">Tresillo</option>
+                            <option value="11">Clave</option>
+                        </select>
+                    </div>
+                    <div class="selector-group">
+                        <label>SCALE</label>
+                        <select data-param="arp_scale">
+                            <option value="0">Reggaeton Minor</option>
+                            <option value="1">Reggaeton Major</option>
+                            <option value="2">Trap Minor</option>
+                            <option value="3">Latin Pop</option>
+                            <option value="4">Sad Boy</option>
+                            <option value="5">Perreo</option>
+                            <option value="6">Romantic</option>
+                            <option value="7">Callejero</option>
+                        </select>
+                    </div>
+                    <div class="selector-group">
+                        <label>KEY</label>
+                        <select data-param="arp_key">
+                            <option value="0">C</option>
+                            <option value="1">C#</option>
+                            <option value="2">D</option>
+                            <option value="3">D#</option>
+                            <option value="4">E</option>
+                            <option value="5">F</option>
+                            <option value="6">F#</option>
+                            <option value="7">G</option>
+                            <option value="8">G#</option>
+                            <option value="9">A</option>
+                            <option value="10">A#</option>
+                            <option value="11">B</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="arp-pattern-display">
+                    <div class="pattern-step" data-step="0"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="1"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="2"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="3"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="4"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="5"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="6"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="7"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="8"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="9"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="10"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="11"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="12"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="13"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="14"><span class="note-label"></span></div>
+                    <div class="pattern-step" data-step="15"><span class="note-label"></span></div>
+                </div>
+                
+                <div class="arp-randomize-section">
+                    <button class="randomize-btn-big" id="randomize-btn">🎲 RANDOMIZE</button>
+                    <div class="selector-group">
+                        <label>MODE:</label>
+                        <select data-param="arp_randomize_mode" id="randomize-mode">
+                            <option value="0">HITMAKER</option>
+                            <option value="1">VIBRAS</option>
+                            <option value="2">EMOCIONES</option>
+                            <option value="3">ALTURA</option>
+                            <option value="4">PERREO</option>
+                            <option value="5">EXPERIMENTAL</option>
+                        </select>
+                    </div>
+                    <div class="complexity-control">
+                        <label>COMPLEXITY:</label>
+                        <div class="complexity-dots">
+                            <span class="dot active" data-complexity="1"></span>
+                            <span class="dot active" data-complexity="2"></span>
+                            <span class="dot active" data-complexity="3"></span>
+                            <span class="dot active" data-complexity="4"></span>
+                            <span class="dot active" data-complexity="5"></span>
+                            <span class="dot" data-complexity="6"></span>
+                            <span class="dot" data-complexity="7"></span>
+                            <span class="dot" data-complexity="8"></span>
+                            <span class="dot" data-complexity="9"></span>
+                            <span class="dot" data-complexity="10"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="arp-knobs-row">
+                    <div class="knob-control">
+                        <div class="knob discrete" data-param="arp_rate" data-min="0" data-max="8" data-value="3"></div>
+                        <label>RATE</label>
+                        <span class="value-display">1/8</span>
+                    </div>
+                    <div class="knob-control">
+                        <div class="knob" data-param="arp_swing" data-min="0" data-max="100" data-value="0"></div>
+                        <label>SWING</label>
+                        <span class="value-display">0%</span>
+                    </div>
+                    <div class="knob-control">
+                        <div class="knob" data-param="arp_gate" data-min="1" data-max="100" data-value="75"></div>
+                        <label>GATE</label>
+                        <span class="value-display">75%</span>
+                    </div>
+                    <div class="knob-control">
+                        <div class="knob discrete" data-param="arp_octaves" data-min="1" data-max="4" data-value="1"></div>
+                        <label>OCTAVES</label>
+                        <span class="value-display">1</span>
+                    </div>
+                    <div class="selector-group">
+                        <label>DIRECTION</label>
+                        <select data-param="arp_direction">
+                            <option value="0">Up</option>
+                            <option value="1">Down</option>
+                            <option value="2">Up-Down</option>
+                            <option value="3">Random</option>
+                        </select>
+                    </div>
+                    <div class="knob-control">
+                        <div class="knob" data-param="arp_humanize" data-min="0" data-max="1" data-value="0"></div>
+                        <label>HUMANIZE</label>
+                        <span class="value-display">0%</span>
+                    </div>
+                </div>
+                
+                <div class="arp-variations">
+                    <label>VARIATIONS:</label>
+                    <button class="variation-btn" data-variation="octave-up">↑ OCT</button>
+                    <button class="variation-btn" data-variation="octave-down">↓ OCT</button>
+                    <button class="variation-btn" data-variation="invert">INVERT</button>
+                    <button class="variation-btn" data-variation="reverse">REVERSE</button>
+                    <button class="variation-btn" data-variation="simplify">SIMPLE</button>
+                    <button class="variation-btn" data-variation="double">DOUBLE</button>
+                    <button class="variation-btn" data-variation="shift-left">◄◄</button>
+                    <button class="variation-btn" data-variation="shift-right">►►</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="bottom-section">
+            <div class="envelope-section">
+                <h3>ENVELOPE</h3>
+                <div class="env-controls">
+                    <div class="knob-control">
+                        <div class="knob" data-param="amp_attack" data-min="0.001" data-max="5" data-value="0.01"></div>
+                        <label>A</label>
+                    </div>
+                    <div class="knob-control">
+                        <div class="knob" data-param="amp_decay" data-min="0.001" data-max="5" data-value="0.1"></div>
+                        <label>D</label>
+                    </div>
+                    <div class="knob-control">
+                        <div class="knob" data-param="amp_sustain" data-min="0" data-max="1" data-value="0.7"></div>
+                        <label>S</label>
+                    </div>
+                    <div class="knob-control">
+                        <div class="knob" data-param="amp_release" data-min="0.001" data-max="10" data-value="0.3"></div>
+                        <label>R</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lfo-section">
+                <h3>LFO</h3>
+                <div class="lfo-controls">
+                    <div class="knob-control">
+                        <div class="knob" data-param="lfo_rate" data-min="0.01" data-max="20" data-value="2"></div>
+                        <label>Rate</label>
+                    </div>
+                    <div class="knob-control">
+                        <div class="knob" data-param="lfo_to_pitch" data-min="0" data-max="1" data-value="0"></div>
+                        <label>Pitch</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="master-section">
+                <h3>MASTER</h3>
+                <div class="master-controls">
+                    <div class="knob-control">
+                        <div class="knob large" data-param="master_volume" data-min="0" data-max="1" data-value="0.7"></div>
+                        <label>VOLUME</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

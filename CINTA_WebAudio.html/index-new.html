@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CINTA - Vintage Texture Machine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles-vintage.css">
+    <link rel="stylesheet" href="size-modes.css">
+</head>
+<body>
+    <div class="synth-container size-compact">
+        
+        <!-- SIZE TOGGLE BUTTON -->
+        <div class="size-toggle-container">
+            <button class="size-toggle-btn" id="sizeToggleBtn">
+                <span id="currentSizeLabel">COMPACT</span>
+            </button>
+            <div class="size-dropdown" id="sizeDropdown">
+                <div class="size-option" data-size="full">
+                    <span>FULL <span class="dimensions">(1400x850)</span></span>
+                    <span class="shortcut">Ctrl+1</span>
+                </div>
+                <div class="size-option" data-size="compact">
+                    <span>COMPACT <span class="dimensions">(900x500)</span></span>
+                    <span class="shortcut">Ctrl+2</span>
+                </div>
+                <div class="size-option" data-size="mini">
+                    <span>MINI <span class="dimensions">(500x340)</span></span>
+                    <span class="shortcut">Ctrl+3</span>
+                </div>
+                <div class="size-option" data-size="strip">
+                    <span>STRIP <span class="dimensions">(380x160)</span></span>
+                    <span class="shortcut">Ctrl+4</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SIZE CHANGE INDICATOR -->
+        <div class="size-indicator" id="sizeIndicator"></div>
+        
+        <!-- HEADER WITH VINTAGE BADGE -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-badge">
+                    <span class="logo-text">CINTA</span>
+                    <span class="logo-subtitle">Vintage Texture Machine · Havana 1975</span>
+                </div>
+                <div class="logo-screws">
+                    <div class="screw"></div>
+                    <div class="screw"></div>
+                    <div class="screw"></div>
+                    <div class="screw"></div>
+                </div>
+            </div>
+            
+            <div class="preset-browser">
+                <button class="preset-btn prev">◀</button>
+                <select id="preset-select">
+                    <option>Init</option>
+                    <option>Reggaeton Bell</option>
+                    <option>Warm Rhodes</option>
+                    <option>Tape Strings</option>
+                    <option>Analog Bass</option>
+                    <option>Bad Bunny Bell</option>
+                    <option>Tainy Atmosphere</option>
+                </select>
+                <button class="preset-btn next">▶</button>
+                <button class="preset-btn save">SAVE</button>
+            </div>
+            
+            <div class="macro-knobs">
+                <div class="macro-knob">
+                    <div class="knob" data-param="vibe" data-min="0" data-max="1" data-value="0.3">
+                        <div class="knob-pointer"></div>
+                    </div>
+                    <label>VIBE</label>
+                </div>
+                <div class="macro-knob">
+                    <div class="knob" data-param="warmth" data-min="0" data-max="1" data-value="0.5">
+                        <div class="knob-pointer"></div>
+                    </div>
+                    <label>WARMTH</label>
+                </div>
+                <div class="macro-knob">
+                    <div class="knob" data-param="space" data-min="0" data-max="1" data-value="0.3">
+                        <div class="knob-pointer"></div>
+                    </div>
+                    <label>SPACE</label>
+                </div>
+                <div class="macro-knob">
+                    <div class="knob" data-param="movement" data-min="0" data-max="1" data-value="0.2">
+                        <div class="knob-pointer"></div>
+                    </div>
+                    <label>MOVEMENT</label>
+                </div>
+                <div class="macro-knob">
+                    <div class="knob" data-param="grit" data-min="0" data-max="1" data-value="0.1">
+                        <div class="knob-pointer"></div>
+                    </div>
+                    <label>GRIT</label>
+                </div>
+            </div>
+        </header>
+
+        <!-- REEL-TO-REEL TAPE DECK -->
+        <div class="tape-deck" id="tape-deck">
+            <div class="reel left-reel">
+                <div class="reel-hub"></div>
+                <div class="reel-spokes"></div>
+                <div class="tape-level"></div>
+            </div>
+            <div class="tape-path">
+                <div class="tape-guide"></div>
+                <div class="tape-head"></div>
+                <div class="tape-guide"></div>
+            </div>
+            <div class="reel right-reel">
+                <div class="reel-hub"></div>
+                <div class="reel-spokes"></div>
+                <div class="tape-level"></div>
+            </div>
+        </div>
+
+        <!-- ENGINES ROW -->
+        <section class="engines-row">
+            
+            <!-- FM ENGINE -->
+            <div class="engine-panel" id="fm-engine">
+                <div class="engine-header">
+                    <h2>FM ENGINE</h2>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <div class="led-indicator on"></div>
+                        <button class="toggle-btn active" data-param="fm_on">ON</button>
+                    </div>
+                </div>
+                <div class="engine-controls">
+                    <div class="knob-group">
+                        <div class="knob" data-param="fm_ratio" data-min="0.5" data-max="16" data-value="2">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Ratio</label>
+                        <div class="nixie-display">
+                            <div class="nixie-digit">2</div>
+                            <div class="nixie-digit">.</div>
+                            <div class="nixie-digit">0</div>
+                        </div>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-param="fm_depth" data-min="0" data-max="1" data-value="0.5">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Depth</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-param="fm_feedback" data-min="0" data-max="1" data-value="0">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Feedback</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-param="fm_level" data-min="0" data-max="1" data-value="0.7">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Level</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAPE ENGINE -->
+            <div class="engine-panel" id="tape-engine">
+                <div class="engine-header">
+                    <h2>TAPE ENGINE</h2>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <div class="led-indicator"></div>
+                        <button class="toggle-btn" data-param="tape_on">OFF</button>
+                    </div>
+                </div>
+                <div class="engine-controls">
+                    <div class="knob-group">
+                        <select class="sound-select" data-param="tape_sound">
+                            <option value="0">Strings</option>
+                            <option value="1">Flutes</option>
+                            <option value="2">Choirs</option>
+                            <option value="3">Brass</option>
+                            <option value="4">Keys</option>
+                        </select>
+                        <label>Sound</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-param="tape_wow" data-min="0" data-max="1" data-value="0.2">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Wow</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-param="tape_flutter" data-min="0" data-max="1" data-value="0.1">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Flutter</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-param="tape_level" data-min="0" data-max="1" data-value="0.7">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Level</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ANALOG ENGINE -->
+            <div class="engine-panel" id="analog-engine">
+                <div class="engine-header">
+                    <h2>ANALOG ENGINE</h2>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <div class="led-indicator"></div>
+                        <button class="toggle-btn" data-param="analog_on">OFF</button>
+                    </div>
+                </div>
+                <div class="engine-controls">
+                    <div class="knob-group">
+                        <select class="sound-select" data-param="analog_wave">
+                            <option value="0">Saw</option>
+                            <option value="1">Square</option>
+                            <option value="2">Pulse</option>
+                            <option value="3">Triangle</option>
+                        </select>
+                        <label>Wave</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-param="analog_detune" data-min="-100" data-max="100" data-value="5">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Detune</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-param="analog_filter" data-min="20" data-max="20000" data-value="8000">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Filter</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-param="analog_resonance" data-min="0" data-max="1" data-value="0.2">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Reso</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob" data-param="analog_level" data-min="0" data-max="1" data-value="0.7">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>Level</label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TEXTURE RACK -->
+        <section class="texture-rack">
+            <h2>TEXTURE RACK</h2>
+            <div class="texture-slots">
+                
+                <div class="texture-slot">
+                    <div class="led-indicator"></div>
+                    <button class="toggle-btn small" data-param="tape_age_on">OFF</button>
+                    <span class="texture-name">TAPE AGE</span>
+                    <div class="knob small" data-param="tape_age_amount" data-min="0" data-max="1" data-value="0.3">
+                        <div class="knob-pointer"></div>
+                    </div>
+                </div>
+                
+                <div class="texture-slot">
+                    <div class="led-indicator"></div>
+                    <button class="toggle-btn small" data-param="vinyl_on">OFF</button>
+                    <span class="texture-name">VINYL</span>
+                    <div class="knob small" data-param="vinyl_amount" data-min="0" data-max="1" data-value="0.3">
+                        <div class="knob-pointer"></div>
+                    </div>
+                </div>
+                
+                <div class="texture-slot">
+                    <div class="led-indicator"></div>
+                    <button class="toggle-btn small" data-param="tube_on">OFF</button>
+                    <span class="texture-name">TUBE</span>
+                    <div class="knob small" data-param="tube_amount" data-min="0" data-max="1" data-value="0.3">
+                        <div class="knob-pointer"></div>
+                    </div>
+                </div>
+                
+                <div class="texture-slot">
+                    <div class="led-indicator"></div>
+                    <button class="toggle-btn small" data-param="room_on">OFF</button>
+                    <span class="texture-name">ROOM</span>
+                    <div class="knob small" data-param="room_amount" data-min="0" data-max="1" data-value="0.3">
+                        <div class="knob-pointer"></div>
+                    </div>
+                </div>
+                
+                <div class="texture-slot">
+                    <div class="led-indicator"></div>
+                    <button class="toggle-btn small" data-param="crush_on">OFF</button>
+                    <span class="texture-name">CRUSH</span>
+                    <div class="knob small" data-param="crush_bits" data-min="4" data-max="16" data-value="12">
+                        <div class="knob-pointer"></div>
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- ARP MACHINE -->
+        <section class="arp-machine">
+            <div class="arp-header">
+                <h2>🎹 ARP MACHINE</h2>
+                <div style="display: flex; gap: 8px; align-items: center;">
+                    <div class="led-indicator"></div>
+                    <button class="toggle-btn" data-param="arp_on">OFF</button>
+                </div>
+            </div>
+            
+            <div class="arp-selectors">
+                <div class="selector-group">
+                    <label>MELODY</label>
+                    <select data-param="arp_melody">
+                        <option value="0">Dákiti Style</option>
+                        <option value="1">Callaíta Style</option>
+                        <option value="2">Tusa Style</option>
+                        <option value="3">Yonaguni Style</option>
+                        <option value="4">Moscow Mule</option>
+                        <option value="5">Me Porto Bonito</option>
+                        <option value="6">Dark Bell</option>
+                        <option value="7">Flute Trap</option>
+                        <option value="8">Summer Hit</option>
+                        <option value="9">Radio Ready</option>
+                    </select>
+                </div>
+                
+                <div class="selector-group">
+                    <label>RHYTHM</label>
+                    <select data-param="arp_rhythm">
+                        <option value="0">Classic Dembow</option>
+                        <option value="1">Modern Dembow</option>
+                        <option value="2">Half-Time Dembow</option>
+                        <option value="3">Perreo Intenso</option>
+                        <option value="4">Perreo Suave</option>
+                        <option value="5">808 Bounce</option>
+                        <option value="6">Hi-Hat Rolls</option>
+                        <option value="7">Trap Latino</option>
+                        <option value="8">Tresillo</option>
+                        <option value="9">Clave</option>
+                    </select>
+                </div>
+                
+                <div class="selector-group">
+                    <label>SCALE</label>
+                    <select data-param="arp_scale">
+                        <option value="0">Reggaeton Minor</option>
+                        <option value="1">Reggaeton Major</option>
+                        <option value="2">Trap Minor</option>
+                        <option value="3">Latin Pop</option>
+                        <option value="4">Sad Boy</option>
+                        <option value="5">Perreo</option>
+                        <option value="6">Romantic</option>
+                        <option value="7">Callejero</option>
+                    </select>
+                </div>
+                
+                <div class="selector-group key-selector">
+                    <label>KEY</label>
+                    <div class="key-buttons">
+                        <button class="key-btn active" data-key="0">C</button>
+                        <button class="key-btn" data-key="1">C#</button>
+                        <button class="key-btn" data-key="2">D</button>
+                        <button class="key-btn" data-key="3">D#</button>
+                        <button class="key-btn" data-key="4">E</button>
+                        <button class="key-btn" data-key="5">F</button>
+                        <button class="key-btn" data-key="6">F#</button>
+                        <button class="key-btn" data-key="7">G</button>
+                        <button class="key-btn" data-key="8">G#</button>
+                        <button class="key-btn" data-key="9">A</button>
+                        <button class="key-btn" data-key="10">A#</button>
+                        <button class="key-btn" data-key="11">B</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="arp-pattern-display">
+                <div class="pattern-step"></div>
+                <div class="pattern-step active"></div>
+                <div class="pattern-step"></div>
+                <div class="pattern-step active"></div>
+                <div class="pattern-step"></div>
+                <div class="pattern-step"></div>
+                <div class="pattern-step active"></div>
+                <div class="pattern-step"></div>
+                <div class="pattern-step active"></div>
+                <div class="pattern-step"></div>
+                <div class="pattern-step active"></div>
+                <div class="pattern-step"></div>
+                <div class="pattern-step"></div>
+                <div class="pattern-step active"></div>
+                <div class="pattern-step"></div>
+                <div class="pattern-step"></div>
+            </div>
+            
+            <div class="arp-controls">
+                <button class="randomize-btn" id="randomize">🎲 RANDOMIZE</button>
+                
+                <div class="selector-group">
+                    <label>MODE</label>
+                    <select data-param="arp_mode">
+                        <option value="0">HITMAKER</option>
+                        <option value="1">VIBRAS</option>
+                        <option value="2">EMOCIONES</option>
+                        <option value="3">ALTURA</option>
+                        <option value="4">PERREO</option>
+                        <option value="5">EXPERIMENTAL</option>
+                    </select>
+                </div>
+                
+                <div class="knob-group">
+                    <div class="knob small" data-param="arp_rate" data-min="0" data-max="8" data-value="3">
+                        <div class="knob-pointer"></div>
+                    </div>
+                    <label>Rate</label>
+                </div>
+                
+                <div class="knob-group">
+                    <div class="knob small" data-param="arp_swing" data-min="0" data-max="100" data-value="0">
+                        <div class="knob-pointer"></div>
+                    </div>
+                    <label>Swing</label>
+                </div>
+                
+                <div class="knob-group">
+                    <div class="knob small" data-param="arp_gate" data-min="1" data-max="100" data-value="75">
+                        <div class="knob-pointer"></div>
+                    </div>
+                    <label>Gate</label>
+                </div>
+                
+                <div class="knob-group">
+                    <div class="knob small" data-param="arp_octaves" data-min="1" data-max="4" data-value="2">
+                        <div class="knob-pointer"></div>
+                    </div>
+                    <label>Octaves</label>
+                </div>
+            </div>
+            
+            <div class="arp-variations">
+                <button class="var-btn" data-variation="octave-up">↑ OCT</button>
+                <button class="var-btn" data-variation="octave-down">↓ OCT</button>
+                <button class="var-btn" data-variation="invert">INVERT</button>
+                <button class="var-btn" data-variation="reverse">REVERSE</button>
+                <button class="var-btn" data-variation="simplify">SIMPLE</button>
+                <button class="var-btn" data-variation="double">DOUBLE</button>
+                <button class="var-btn" data-variation="shift-left">◄◄</button>
+                <button class="var-btn" data-variation="shift-right">►►</button>
+            </div>
+        </section>
+
+        <!-- BOTTOM CONTROLS -->
+        <section class="bottom-controls">
+            <div class="envelope-section">
+                <h3>ENVELOPE</h3>
+                <div class="env-knobs">
+                    <div class="knob-group">
+                        <div class="knob small" data-param="amp_attack" data-min="0.001" data-max="5" data-value="0.01">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>A</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob small" data-param="amp_decay" data-min="0.001" data-max="5" data-value="0.2">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>D</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob small" data-param="amp_sustain" data-min="0" data-max="1" data-value="0.7">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>S</label>
+                    </div>
+                    <div class="knob-group">
+                        <div class="knob small" data-param="amp_release" data-min="0.001" data-max="10" data-value="0.3">
+                            <div class="knob-pointer"></div>
+                        </div>
+                        <label>R</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="master-section">
+                <h3>MASTER OUTPUT</h3>
+                
+                <!-- VU METER -->
+                <div class="vu-meter" id="vu-meter" data-level="low">
+                    <div class="vu-face">
+                        <div class="vu-scale">
+                            <span class="vu-mark" style="--angle: -45deg">-20</span>
+                            <span class="vu-mark" style="--angle: -30deg">-10</span>
+                            <span class="vu-mark" style="--angle: -15deg">-7</span>
+                            <span class="vu-mark" style="--angle: 0deg">-5</span>
+                            <span class="vu-mark" style="--angle: 15deg">-3</span>
+                            <span class="vu-mark" style="--angle: 30deg">0</span>
+                            <span class="vu-mark red" style="--angle: 40deg">+1</span>
+                            <span class="vu-mark red" style="--angle: 50deg">+3</span>
+                        </div>
+                        <div class="vu-needle"></div>
+                        <div class="vu-pivot"></div>
+                    </div>
+                    <div class="vu-glass"></div>
+                    <div class="vu-label">VU</div>
+                </div>
+                
+                <div class="knob-group">
+                    <div class="knob" data-param="master_volume" data-min="0" data-max="1" data-value="0.8">
+                        <div class="knob-pointer"></div>
+                    </div>
+                    <label>MASTER</label>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+    
+    <script src="size-manager.js"></script>
+    <script src="main-vintage.js"></script>
+</body>
+</html>
