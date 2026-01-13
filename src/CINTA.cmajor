@@ -131,6 +131,15 @@ processor CINTA [[ main ]]
     // MIDI Event Handlers
     event noteOn(std::notes::NoteOn e)
     {
+        // If arpeggiator is on, just track the note
+        if (param_arp_on > 0.5f)
+        {
+            arp_held_note = int(e.pitch);
+            arp_note_held = true;
+            return;
+        }
+        
+        // Normal note handling when arp is off
         // Find free voice
         int freeVoice = -1;
         for (int i = 0; i < 8; ++i)
@@ -161,6 +170,29 @@ processor CINTA [[ main ]]
     
     event noteOff(std::notes::NoteOff e)
     {
+        // If arpeggiator is on, release the held note
+        if (param_arp_on > 0.5f)
+        {
+            arp_note_held = false;
+            // Release the currently playing arp note
+            if (arp_current_note_on)
+            {
+                int noteToRelease = arp_current_playing_note;
+                for (int i = 0; i < 8; ++i)
+                {
+                    if (voice_note[i] == noteToRelease && voice_amp_phase[i] >= 0 && voice_amp_phase[i] < 3)
+                    {
+                        voice_active[i] = false;
+                        voice_amp_phase[i] = 3;
+                        voice_filter_phase[i] = 3;
+                    }
+                }
+                arp_current_note_on = false;
+            }
+            return;
+        }
+        
+        // Normal note release when arp is off
         // Release ALL matching voices (don't break - release all instances)
         int noteToRelease = int(e.pitch);
         
@@ -221,6 +253,15 @@ processor CINTA [[ main ]]
     float pitch_bend = 0.0f;
     float lfo_phase = 0.0f;
     
+    // Arpeggiator State
+    bool arp_note_held = false;
+    int arp_held_note = 60;
+    int arp_step_counter = 0;
+    float arp_phase_accum = 0.0f;
+    bool arp_current_note_on = false;
+    int arp_current_playing_note = 0;
+    int[16] arp_melody_pattern = (1, 0, 5, 0, 1, 0, 5, 0, 1, 0, 5, 0, 1, 0, 5, 0);
+    
     void main()
     {
         let sampleRate = float(processor.frequency);
@@ -233,6 +274,75 @@ processor CINTA [[ main ]]
             let lfoValue = float(sin(lfo_phase * twoPi));
             lfo_phase += lfoInc;
             if (lfo_phase >= 1.0f) lfo_phase -= 1.0f;
+            
+            // ARPEGGIATOR
+            if (param_arp_on > 0.5f && arp_note_held)
+            {
+                let stepsPerSecond = param_arp_rate * 4.0f; // Rate multiplier
+                let samplesPerStep = sampleRate / stepsPerSecond;
+                
+                arp_phase_accum += 1.0f;
+                
+                if (arp_phase_accum >= samplesPerStep)
+                {
+                    arp_phase_accum = 0.0f;
+                    
+                    // Release previous note
+                    if (arp_current_note_on)
+                    {
+                        int noteToRelease = arp_current_playing_note;
+                        for (int i = 0; i < 8; ++i)
+                        {
+                            if (voice_note[i] == noteToRelease && voice_amp_phase[i] < 3)
+                            {
+                                voice_active[i] = false;
+                                voice_amp_phase[i] = 3;
+                                voice_filter_phase[i] = 3;
+                            }
+                        }
+                        arp_current_note_on = false;
+                    }
+                    
+                    // Play next note in pattern
+                    let step = arp_step_counter % 16;
+                    let scaleDegree = arp_melody_pattern[step];
+                    
+                    if (scaleDegree > 0)
+                    {
+                        arp_current_playing_note = arp_held_note + (scaleDegree - 1) * 2; // Simple scale
+                        
+                        // Find free voice
+                        int freeVoice = -1;
+                        for (int i = 0; i < 8; ++i)
+                        {
+                            if (!voice_active[i])
+                            {
+                                freeVoice = i;
+                                break;
+                            }
+                        }
+                        if (freeVoice < 0) freeVoice = 0;
+                        
+                        // Trigger note
+                        voice_active[freeVoice] = true;
+                        voice_note[freeVoice] = arp_current_playing_note;
+                        voice_velocity[freeVoice] = 0.8f;
+                        voice_freq[freeVoice] = std::notes::noteToFrequency(arp_current_playing_note);
+                        voice_amp_phase[freeVoice] = 0;
+                        voice_amp_level[freeVoice] = 0.0f;
+                        voice_filter_phase[freeVoice] = 0;
+                        voice_filter_level[freeVoice] = 0.0f;
+                        voice_fm_phase[freeVoice] = 0.0f;
+                        voice_fm_mod_phase[freeVoice] = 0.0f;
+                        
+                        arp_current_note_on = true;
+                    }
+                    
+                    arp_step_counter++;
+                    if (arp_step_counter >= 16)
+                        arp_step_counter = 0;
+                }
+            }
             
             float mixL = 0.0f;
             float mixR = 0.0f;

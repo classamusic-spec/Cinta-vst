@@ -184,10 +184,12 @@ class ToggleButton {
                     }
                     // Send 0 when OFF, saved value when ON
                     const value = this.isActive ? this.savedValue : 0.0;
+                    console.log(`Toggle ${this.param}: ${this.isActive ? 'ON' : 'OFF'} → ${value}`);
                     patchConnection.sendEventOrValue(this.param, value);
                 } else {
                     // Regular toggle (ON/OFF engines)
                     const value = this.isActive ? 1.0 : 0.0;
+                    console.log(`Toggle ${this.param}: ${this.isActive ? 'ON' : 'OFF'} → ${value}`);
                     patchConnection.sendEventOrValue(this.param, value);
                 }
             } catch (error) {

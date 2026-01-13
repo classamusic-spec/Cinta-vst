@@ -984,7 +984,7 @@ body {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(245, 240, 230, 0.15);
     border-radius: 8px;
-    padding: 12px;
+    padding: 8px 12px;
     margin-bottom: 12px;
     position: relative;
 }
@@ -993,21 +993,21 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-    padding-bottom: 6px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
     border-bottom: 1px solid rgba(245, 240, 230, 0.1);
 }
 
 .arp-header h2 {
-    font-size: 16px;
-    letter-spacing: 3px;
+    font-size: 14px;
+    letter-spacing: 2px;
     color: #d4cfc5;
 }
 
 .bottom-controls {
     display: grid;
     grid-template-columns: 2fr 1fr;
-    gap: 12px;
+    gap: 10px;
 }
 
 .envelope-section,
@@ -1015,20 +1015,20 @@ body {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(245, 240, 230, 0.15);
     border-radius: 8px;
-    padding: 12px;
+    padding: 8px 10px;
 }
 
 .envelope-section h3,
 .master-section h3 {
-    font-size: 12px;
-    letter-spacing: 2px;
+    font-size: 11px;
+    letter-spacing: 1.5px;
     color: #d4cfc5;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
 }
 
 .env-knobs {
     display: flex;
-    gap: 20px;
+    gap: 12px;
     justify-content: center;
 }
 
@@ -1037,32 +1037,48 @@ body {
    ═══════════════════════════════════════════════════════════════ */
 
 .arp-selectors {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+    margin-bottom: 8px;
+}
+
+.selector-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.selector-group label {
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: #d4cfc5;
+    opacity: 0.8;
 }
 
 .selector-group select {
-    width: 100%;
-    padding: 8px;
+    padding: 6px 8px;
     background: rgba(0,0,0,0.5);
     border: 1px solid rgba(245, 240, 230, 0.2);
-    border-radius: 4px;
+    border-radius: 3px;
     color: #f5f0e6;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
+    font-size: 10px;
+    min-width: 140px;
+}
+
+.key-selector {
+    flex: 1;
 }
 
 .key-buttons {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 4px;
-    margin-top: 8px;
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
 }
 
 .key-btn {
-    padding: 6px 4px;
+    padding: 5px 8px;
     background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
     border: 1px solid rgba(245, 240, 230, 0.2);
     border-radius: 3px;
@@ -1070,6 +1086,7 @@ body {
     font-size: 9px;
     cursor: pointer;
     transition: all 0.2s;
+    min-width: 28px;
 }
 
 .key-btn:hover {
@@ -1084,20 +1101,18 @@ body {
 
 .arp-pattern-display {
     display: flex;
-    gap: 6px;
-    padding: 20px 15px;
+    gap: 4px;
+    padding: 8px;
     background: #1a1209;
-    border-radius: 6px;
-    justify-content: center;
-    margin-bottom: 20px;
-    box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+    border-radius: 4px;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
 }
 
 .pattern-step {
-    width: 24px;
-    height: 60px;
+    width: 18px;
+    height: 45px;
     background: #3d2b1f;
-    border-radius: 4px;
+    border-radius: 3px;
     transition: all 0.2s;
     border: 1px solid rgba(245, 240, 230, 0.1);
     position: relative;
@@ -1117,26 +1132,41 @@ body {
 
 .arp-controls {
     display: flex;
-    gap: 20px;
+    gap: 8px;
     align-items: center;
-    justify-content: center;
-    margin-bottom: 15px;
+    flex-wrap: nowrap;
+}
+
+.arp-controls .knob-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.arp-controls .knob-group label {
+    font-size: 8px;
+    letter-spacing: 1px;
+    color: #d4cfc5;
+    opacity: 0.8;
+    text-align: center;
 }
 
 .randomize-btn {
-    padding: 12px 30px;
+    padding: 8px 16px;
     background: linear-gradient(180deg, #ff9500 0%, #cc7000 100%);
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     color: #1a1209;
     font-family: 'IBM Plex Mono', monospace;
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
     box-shadow: 
-        0 4px 8px rgba(255, 149, 0, 0.3),
+        0 2px 6px rgba(255, 149, 0, 0.3),
         inset 0 1px 0 rgba(255,255,255,0.3);
+    white-space: nowrap;
 }
 
 .randomize-btn:hover {
@@ -1153,19 +1183,18 @@ body {
 
 .arp-variations {
     display: flex;
-    gap: 8px;
-    justify-content: center;
-    padding-top: 15px;
-    border-top: 1px solid rgba(245, 240, 230, 0.1);
+    gap: 3px;
+    flex-wrap: wrap;
+    margin-left: auto;
 }
 
 .var-btn {
-    padding: 8px 14px;
+    padding: 6px 10px;
     background: linear-gradient(180deg, #3a3a3a 0%, #2a2a2a 100%);
     border: 1px solid rgba(245, 240, 230, 0.2);
-    border-radius: 4px;
+    border-radius: 3px;
     color: #d4cfc5;
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
