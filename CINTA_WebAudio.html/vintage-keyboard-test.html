@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CINTA Vintage Keyboard Prototype</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="vintage-keyboard.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: linear-gradient(135deg, #1a1410 0%, #2a1f1a 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #d4af37;
+        }
+        
+        .prototype-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .prototype-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            color: #d4af37;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+            margin-bottom: 10px;
+        }
+        
+        .prototype-header p {
+            font-size: 14px;
+            color: #b8860b;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .prototype-info {
+            max-width: 1000px;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(139, 90, 43, 0.3);
+        }
+        
+        .prototype-info h2 {
+            font-size: 18px;
+            color: #d4af37;
+            margin-bottom: 15px;
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .prototype-info ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .prototype-info li {
+            padding: 8px 0;
+            color: #b8860b;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(139, 90, 43, 0.2);
+        }
+        
+        .prototype-info li:last-child {
+            border-bottom: none;
+        }
+        
+        .prototype-info li::before {
+            content: '▸ ';
+            color: #d4af37;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .status-message {
+            text-align: center;
+            padding: 15px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid #d4af37;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            color: #d4af37;
+            font-size: 14px;
+        }
+        
+        .connection-status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff4444;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .connection-status.connected {
+            background: #44ff44;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="prototype-header">
+        <h1>CINTA</h1>
+        <p>Vintage Keyboard Prototype • 1975 Havana Style</p>
+    </div>
+    
+    <div class="status-message">
+        <span class="connection-status"></span>
+        <span id="status-text">Standalone Mode - Visual Prototype Only</span>
+    </div>
+    
+    <div id="keyboard-container"></div>
+    
+    <div class="prototype-info">
+        <h2>Prototype Features</h2>
+        <ul>
+            <li><strong>Aged Ivory Keys:</strong> Vintage cream/yellowed white keys with subtle texture</li>
+            <li><strong>Mahogany Black Keys:</strong> Dark wood grain with authentic depth</li>
+            <li><strong>Brass Controls:</strong> Gold-plated octave buttons with vintage styling</li>
+            <li><strong>Green Felt Base:</strong> Classic piano felt texture under keys</li>
+            <li><strong>Active Glow:</strong> Subtle golden glow when keys are pressed</li>
+            <li><strong>Responsive Animation:</strong> Realistic key press depth and shadow</li>
+            <li><strong>1975 Aesthetic:</strong> Warm colors, patina, and period-accurate design</li>
+        </ul>
+        
+        <h2 style="margin-top: 25px;">Interaction</h2>
+        <ul>
+            <li>Click or tap keys to trigger notes (visual feedback only in standalone mode)</li>
+            <li>Use octave buttons to shift keyboard range</li>
+            <li>Hover over keys to see highlight effect</li>
+            <li>Keys show pressed state with depth animation</li>
+        </ul>
+        
+        <h2 style="margin-top: 25px;">Next Steps</h2>
+        <ul>
+            <li>Integrate with CINTA patch for actual sound output</li>
+            <li>Add computer keyboard mapping (A,S,D,F,G,H,J,K,L keys)</li>
+            <li>Implement velocity sensitivity based on click speed</li>
+            <li>Expand to full 61-key or 88-key range</li>
+            <li>Add sustain pedal indicator and controls</li>
+        </ul>
+    </div>
+    
+    <script src="vintage-keyboard.js"></script>
+    <script>
+        // Initialize keyboard in standalone mode (no patch connection)
+        const container = document.getElementById('keyboard-container');
+        const keyboard = new VintageKeyboard(container, null);
+        
+        console.log('🎹 CINTA Vintage Keyboard Prototype Loaded');
+        console.log('📦 Version: 1.0.0 Prototype');
+        console.log('🎨 Style: 1975 Havana Aesthetic');
+    </script>
+</body>
+</html>

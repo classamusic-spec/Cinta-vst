@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles-vintage.css">
     <link rel="stylesheet" href="size-modes.css">
+    <link rel="stylesheet" href="vintage-keyboard.css">
 </head>
 <body>
     <div id="cmaj-overlay">
@@ -558,7 +559,12 @@
             </div>
         </section>
         
-        <div class="cmaj-piano-keyboard" id="cmaj-keyboard-container"></div>
+        <div id="cmaj-main" class="main-content"></div>
+        <button class="keyboard-toggle-btn" id="keyboardToggleBtn">
+            <span>🎹 PIANO</span>
+            <span class="icon">▼</span>
+        </button>
+        <div id="cmaj-keyboard-container"></div>
         
     </div>
     
@@ -679,28 +685,13 @@
             margin-top: 1rem;
         }
         
-        #cmaj-keyboard-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 120px;
-            background: rgba(0, 0, 0, 0.9);
-            border-top: 2px solid #5a4a3a;
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
-        }
+        /* Keyboard container styles moved to vintage-keyboard.css */
     </style>
     
     <script src="presets.js"></script>
+    <script src="vintage-keyboard.js"></script>
     <script type="module">
         import * as patch from "./cmaj_CINTA.js"
-        import PianoKeyboard from "./cmaj_api/cmaj-piano-keyboard.js"
-        
-        customElements.define("cmaj-panel-piano-keyboard", PianoKeyboard);
         
         let patchConnection = null;
         let audioContext = null;
@@ -722,57 +713,64 @@
         }
         
         function createPianoKeyboard(connection) {
-            const midiInputEndpointID = getMIDIInputEndpointID(connection);
+            const container = document.getElementById("cmaj-keyboard-container");
+            console.log('🎹 Creating vintage keyboard...');
             
-            console.log('MIDI input endpoint ID:', midiInputEndpointID);
-            
-            if (midiInputEndpointID) {
-                const container = document.getElementById("cmaj-keyboard-container");
-                console.log('Keyboard container:', container);
-                keyboard = new PianoKeyboard();
-                keyboard.style.width = '100%';
-                keyboard.style.height = '100px';
-                container.appendChild(keyboard);
-                keyboard.attachToPatchConnection(connection, midiInputEndpointID);
-                console.log('✅ Piano keyboard created and attached');
+            if (container) {
+                // Create vintage keyboard with patch connection
+                keyboard = new VintageKeyboard(container, connection);
+                console.log('✅ Vintage keyboard created and attached');
+                
+                // Setup keyboard drawer toggle
+                setupKeyboardDrawer();
             } else {
-                console.warn('⚠️ Cannot create piano keyboard - no MIDI endpoint');
+                console.warn('⚠️ Cannot create keyboard - container not found');
             }
         }
         
-        // Add computer keyboard support (ASDF keys)
-        function setupComputerKeyboard() {
-            const keyMap = {
-                'a': 60, 'w': 61, 's': 62, 'e': 63, 'd': 64, 'f': 65, 't': 66, 'g': 67,
-                'y': 68, 'h': 69, 'u': 70, 'j': 71, 'k': 72, 'o': 73, 'l': 74, 'p': 75
-            };
+        function setupKeyboardDrawer() {
+            const toggleBtn = document.getElementById('keyboardToggleBtn');
+            const container = document.getElementById('cmaj-keyboard-container');
             
-            const activeNotes = new Set();
+            // Load saved state from localStorage
+            const savedState = localStorage.getItem('cinta-keyboard-open');
+            const isOpen = savedState === 'true';
             
+            if (isOpen) {
+                container.classList.add('open');
+                toggleBtn.classList.add('open');
+            }
+            
+            // Toggle button click handler
+            toggleBtn.addEventListener('click', () => {
+                const isCurrentlyOpen = container.classList.contains('open');
+                
+                if (isCurrentlyOpen) {
+                    container.classList.remove('open');
+                    toggleBtn.classList.remove('open');
+                    localStorage.setItem('cinta-keyboard-open', 'false');
+                    console.log('🎹 Keyboard drawer closed');
+                } else {
+                    container.classList.add('open');
+                    toggleBtn.classList.add('open');
+                    localStorage.setItem('cinta-keyboard-open', 'true');
+                    console.log('🎹 Keyboard drawer opened');
+                }
+            });
+            
+            // Keyboard shortcut: Ctrl+K or Cmd+K
             document.addEventListener('keydown', (e) => {
-                if (e.repeat) return;
-                const key = e.key.toLowerCase();
-                if (keyMap[key] && !activeNotes.has(key)) {
-                    activeNotes.add(key);
-                    const note = keyMap[key];
-                    console.log('🎹 Computer key pressed:', key, 'Note:', note);
-                    
-                    // Use same format as testNote
-                    patchConnection?.sendEventOrValue('noteOn', { pitch: note, velocity: 1.0 });
-                    console.log('Sent noteOn:', note);
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    toggleBtn.click();
                 }
             });
             
-            document.addEventListener('keyup', (e) => {
-                const key = e.key.toLowerCase();
-                if (keyMap[key] && activeNotes.has(key)) {
-                    activeNotes.delete(key);
-                    const note = keyMap[key];
-                    patchConnection?.sendEventOrValue('noteOff', { pitch: note, velocity: 0.0 });
-                    console.log('Sent noteOff:', note);
-                }
-            });
-            
+            console.log('✅ Keyboard drawer initialized');
+        }
+        
+        // Computer keyboard is now handled by VintageKeyboard component
+        function setupComputerKeyboard() {
             // Add Escape key for panic/all-notes-off
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape') {
