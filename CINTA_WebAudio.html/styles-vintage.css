@@ -707,7 +707,7 @@ body {
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(245, 240, 230, 0.15);
     border-radius: 8px;
-    padding: 20px;
+    padding: 20px 20px 10px 20px;
     position: relative;
     box-shadow: 
         0 4px 12px rgba(0,0,0,0.4),
@@ -898,9 +898,11 @@ body {
 }
 
 .engine-controls {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-    gap: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .knob-group {

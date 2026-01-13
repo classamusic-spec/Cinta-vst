@@ -1,0 +1,272 @@
+/* CINTA Vintage Slider Component - Ultra-Detailed Brass/Gold Theme */
+
+/* Slider Container */
+.vintage-slider-container {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px 8px 8px;
+    background: linear-gradient(135deg, #2a2018 0%, #1a1410 100%);
+    border-radius: 6px;
+    border: 1px solid #4a3a2a;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+/* Nixie Tube Display */
+.nixie-display {
+    width: 60px;
+    height: 32px;
+    background: linear-gradient(180deg, #1a0f08 0%, #0d0704 100%);
+    border: 2px solid #3a2820;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        inset 0 2px 6px rgba(0, 0, 0, 0.8),
+        0 0 8px rgba(255, 140, 0, 0.3);
+}
+
+/* Glass reflection overlay */
+.nixie-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+}
+
+/* Nixie tube glow effect */
+.nixie-display::after {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    background: radial-gradient(circle, 
+        rgba(255, 140, 0, 0.2) 0%, 
+        transparent 70%);
+    pointer-events: none;
+    animation: nixieFlicker 3s infinite;
+}
+
+@keyframes nixieFlicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.95; }
+    51% { opacity: 1; }
+    52% { opacity: 0.97; }
+    53% { opacity: 1; }
+}
+
+/* Nixie tube number */
+.nixie-number {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ff8c00;
+    text-shadow: 
+        0 0 8px rgba(255, 140, 0, 0.8),
+        0 0 12px rgba(255, 140, 0, 0.6),
+        0 0 16px rgba(255, 140, 0, 0.4);
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+    animation: nixieGlow 2s infinite alternate;
+}
+
+@keyframes nixieGlow {
+    0% { 
+        text-shadow: 
+            0 0 8px rgba(255, 140, 0, 0.8),
+            0 0 12px rgba(255, 140, 0, 0.6),
+            0 0 16px rgba(255, 140, 0, 0.4);
+    }
+    100% { 
+        text-shadow: 
+            0 0 10px rgba(255, 140, 0, 1),
+            0 0 15px rgba(255, 140, 0, 0.8),
+            0 0 20px rgba(255, 140, 0, 0.6);
+    }
+}
+
+/* Unit label in nixie display */
+.nixie-unit {
+    font-size: 9px;
+    color: #d4af37;
+    opacity: 0.7;
+    margin-left: 2px;
+}
+
+/* Slider Track Container */
+.slider-track-container {
+    position: relative;
+    width: 24px;
+    height: 60px;
+    margin: 8px 0;
+}
+
+/* Slider Track */
+.slider-track {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(180deg, 
+        #0d0704 0%,
+        #1a0f08 50%,
+        #0d0704 100%);
+    border: 1px solid #000000;
+    border-radius: 3px;
+    box-shadow: 
+        inset 0 2px 4px rgba(0, 0, 0, 0.8),
+        inset 0 -1px 2px rgba(255, 255, 255, 0.05);
+    overflow: hidden;
+}
+
+/* Track wear texture */
+.slider-track::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.02) 2px,
+        rgba(255, 255, 255, 0.02) 3px
+    );
+    pointer-events: none;
+}
+
+/* Track scratches */
+.slider-track::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(90deg, transparent 48%, rgba(255, 255, 255, 0.03) 49%, transparent 50%),
+        linear-gradient(0deg, transparent 30%, rgba(0, 0, 0, 0.1) 31%, transparent 32%);
+    pointer-events: none;
+}
+
+/* Slider Fill (shows value) */
+.slider-fill {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(180deg, 
+        rgba(212, 175, 55, 0.3) 0%,
+        rgba(212, 175, 55, 0.15) 100%);
+    transition: height 0.1s ease;
+    pointer-events: none;
+}
+
+/* Slider Cap (draggable) */
+.slider-cap {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 12px;
+    background: linear-gradient(180deg, 
+        #d4af37 0%,
+        #b8860b 50%,
+        #8b6914 100%);
+    border: 1px solid #ffd700;
+    border-radius: 2px;
+    cursor: grab;
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.6),
+        inset 0 1px 2px rgba(255, 255, 255, 0.4),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+        0 0 8px rgba(212, 175, 55, 0.4);
+    transition: all 0.1s ease;
+    z-index: 10;
+}
+
+.slider-cap:hover {
+    background: linear-gradient(180deg, 
+        #ffd700 0%,
+        #d4af37 50%,
+        #b8860b 100%);
+    box-shadow: 
+        0 3px 6px rgba(0, 0, 0, 0.7),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+        0 0 12px rgba(212, 175, 55, 0.6);
+}
+
+.slider-cap:active {
+    cursor: grabbing;
+    box-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.8),
+        inset 0 1px 3px rgba(0, 0, 0, 0.4),
+        0 0 16px rgba(212, 175, 55, 0.8);
+}
+
+/* Cap grip lines */
+.slider-cap::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 1px,
+        rgba(0, 0, 0, 0.2) 1px,
+        rgba(0, 0, 0, 0.2) 2px
+    );
+    border-radius: 1px;
+}
+
+/* Cap highlight */
+.slider-cap::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 2px;
+    right: 2px;
+    height: 3px;
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.4) 0%,
+        transparent 100%);
+    border-radius: 1px;
+}
+
+/* All sliders use brass/gold aesthetic - no color variants */
+
+/* Parameter Label */
+.slider-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 600;
+    color: #d4af37;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+    text-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.8),
+        0 0 4px rgba(212, 175, 55, 0.3);
+    margin-top: 2px;
+    margin-bottom: 0;
+}
+
+/* Slider group container */
+.slider-group {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+}

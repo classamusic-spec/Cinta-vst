@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CINTA Vintage Sliders - Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="vintage-slider.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 40px;
+            background: linear-gradient(135deg, #1a1410 0%, #0d0a08 100%);
+            font-family: 'IBM Plex Mono', monospace;
+            color: #d4af37;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            margin-bottom: 40px;
+        }
+        
+        .section {
+            background: linear-gradient(135deg, #2a2018 0%, #1a1410 100%);
+            border: 2px solid #5a4a3a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #d4af37;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+        
+        .slider-row {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎚️ CINTA VINTAGE SLIDERS - ULTRA-DETAILED BRASS/GOLD THEME</h1>
+    
+    <div class="section">
+        <div class="section-title">🔊 FM ENGINE (Purple/Pink)</div>
+        <div class="slider-row" id="fm-sliders"></div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">📼 TAPE ENGINE (Green)</div>
+        <div class="slider-row" id="tape-sliders"></div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">⚡ ANALOG ENGINE (Gold)</div>
+        <div class="slider-row" id="analog-sliders"></div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">✨ EFFECTS (Orange)</div>
+        <div class="slider-row" id="effects-sliders"></div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">📈 ENVELOPE (Blue)</div>
+        <div class="slider-row" id="envelope-sliders"></div>
+    </div>
+    
+    <div class="section">
+        <div class="section-title">🎛️ MASTER (Red)</div>
+        <div class="slider-row" id="master-sliders"></div>
+    </div>
+    
+    <script src="vintage-slider.js"></script>
+    <script>
+        // FM Engine sliders (Purple/Pink)
+        createSliderGroup(document.getElementById('fm-sliders'), [
+            { param: 'fm_ratio', label: 'RATIO', min: 0.5, max: 16, value: 2, unit: '', color: 'purple', decimals: 1 },
+            { param: 'fm_depth', label: 'DEPTH', min: 0, max: 100, value: 50, unit: '%', color: 'purple', decimals: 0 },
+            { param: 'fm_feedback', label: 'FEEDBACK', min: 0, max: 100, value: 0, unit: '%', color: 'pink', decimals: 0 },
+            { param: 'fm_level', label: 'LEVEL', min: 0, max: 100, value: 70, unit: '%', color: 'pink', decimals: 0 }
+        ]);
+        
+        // Tape Engine sliders (Green)
+        createSliderGroup(document.getElementById('tape-sliders'), [
+            { param: 'tape_speed', label: 'SPEED', min: 50, max: 150, value: 100, unit: '%', color: 'green', decimals: 0 },
+            { param: 'tape_wow', label: 'WOW', min: 0, max: 100, value: 20, unit: '%', color: 'green', decimals: 0 },
+            { param: 'tape_flutter', label: 'FLUTTER', min: 0, max: 100, value: 10, unit: '%', color: 'green', decimals: 0 },
+            { param: 'tape_level', label: 'LEVEL', min: 0, max: 100, value: 70, unit: '%', color: 'green', decimals: 0 }
+        ]);
+        
+        // Analog Engine sliders (Gold)
+        createSliderGroup(document.getElementById('analog-sliders'), [
+            { param: 'analog_cutoff', label: 'CUTOFF', min: 20, max: 20000, value: 1000, unit: 'Hz', color: 'gold', decimals: 0 },
+            { param: 'analog_res', label: 'RES', min: 0, max: 100, value: 30, unit: '%', color: 'gold', decimals: 0 },
+            { param: 'analog_env', label: 'ENV', min: 0, max: 100, value: 50, unit: '%', color: 'gold', decimals: 0 },
+            { param: 'analog_level', label: 'LEVEL', min: 0, max: 100, value: 70, unit: '%', color: 'gold', decimals: 0 }
+        ]);
+        
+        // Effects sliders (Orange)
+        createSliderGroup(document.getElementById('effects-sliders'), [
+            { param: 'delay_time', label: 'TIME', min: 0, max: 2000, value: 500, unit: 'ms', color: 'orange', decimals: 0 },
+            { param: 'delay_feedback', label: 'FEEDBACK', min: 0, max: 100, value: 40, unit: '%', color: 'orange', decimals: 0 },
+            { param: 'delay_mix', label: 'MIX', min: 0, max: 100, value: 30, unit: '%', color: 'orange', decimals: 0 },
+            { param: 'reverb_mix', label: 'REVERB', min: 0, max: 100, value: 25, unit: '%', color: 'orange', decimals: 0 }
+        ]);
+        
+        // Envelope sliders (Blue)
+        createSliderGroup(document.getElementById('envelope-sliders'), [
+            { param: 'amp_attack', label: 'ATTACK', min: 0, max: 5000, value: 10, unit: 'ms', color: 'blue', decimals: 0 },
+            { param: 'amp_decay', label: 'DECAY', min: 0, max: 5000, value: 200, unit: 'ms', color: 'blue', decimals: 0 },
+            { param: 'amp_sustain', label: 'SUSTAIN', min: 0, max: 100, value: 70, unit: '%', color: 'blue', decimals: 0 },
+            { param: 'amp_release', label: 'RELEASE', min: 0, max: 5000, value: 300, unit: 'ms', color: 'blue', decimals: 0 }
+        ]);
+        
+        // Master slider (Red)
+        createSliderGroup(document.getElementById('master-sliders'), [
+            { param: 'master_volume', label: 'MASTER', min: 0, max: 100, value: 80, unit: '%', color: 'red', decimals: 0 }
+        ]);
+        
+        console.log('✅ Vintage sliders test loaded!');
+    </script>
+</body>
+</html>

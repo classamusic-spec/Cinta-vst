@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles-vintage.css">
     <link rel="stylesheet" href="size-modes.css">
     <link rel="stylesheet" href="vintage-keyboard.css">
+    <link rel="stylesheet" href="vintage-slider.css">
 </head>
 <body>
     <div id="cmaj-overlay">
@@ -176,122 +177,42 @@
                         <button class="toggle-btn active" data-param="fm_on">ON</button>
                     </div>
                 </div>
-                <div class="engine-controls">
-                    <div class="knob-group">
-                        <div class="knob" data-param="fm_ratio" data-min="0.5" data-max="16" data-value="2">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Ratio</label>
-                        <div class="nixie-display">
-                            <div class="nixie-digit">2</div>
-                            <div class="nixie-digit">.</div>
-                            <div class="nixie-digit">0</div>
-                        </div>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-param="fm_depth" data-min="0" data-max="1" data-value="0.5">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Depth</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-param="fm_feedback" data-min="0" data-max="1" data-value="0">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Feedback</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-param="fm_level" data-min="0" data-max="1" data-value="0.7">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Level</label>
-                    </div>
-                </div>
+                <div class="engine-controls" id="fm-sliders"></div>
             </div>
 
             <div class="engine-panel" id="tape-engine">
                 <div class="engine-header">
                     <h2>TAPE ENGINE</h2>
+                    <select class="sound-select" data-param="tape_sound" style="margin: 0 auto;">
+                        <option value="0">Strings</option>
+                        <option value="1">Flutes</option>
+                        <option value="2">Choirs</option>
+                        <option value="3">Brass</option>
+                        <option value="4">Keys</option>
+                    </select>
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <div class="led-indicator"></div>
                         <button class="toggle-btn" data-param="tape_on">OFF</button>
                     </div>
                 </div>
-                <div class="engine-controls">
-                    <div class="knob-group">
-                        <select class="sound-select" data-param="tape_sound">
-                            <option value="0">Strings</option>
-                            <option value="1">Flutes</option>
-                            <option value="2">Choirs</option>
-                            <option value="3">Brass</option>
-                            <option value="4">Keys</option>
-                        </select>
-                        <label>Sound</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-param="tape_wow" data-min="0" data-max="1" data-value="0.2">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Wow</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-param="tape_flutter" data-min="0" data-max="1" data-value="0.1">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Flutter</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-param="tape_level" data-min="0" data-max="1" data-value="0.7">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Level</label>
-                    </div>
-                </div>
+                <div class="engine-controls" id="tape-sliders"></div>
             </div>
 
             <div class="engine-panel" id="analog-engine">
                 <div class="engine-header">
                     <h2>ANALOG ENGINE</h2>
+                    <select class="sound-select" data-param="analog_osc1_wave" style="margin: 0 auto;">
+                        <option value="0">Saw</option>
+                        <option value="1">Square</option>
+                        <option value="2">Pulse</option>
+                        <option value="3">Triangle</option>
+                    </select>
                     <div style="display: flex; gap: 8px; align-items: center;">
                         <div class="led-indicator"></div>
                         <button class="toggle-btn" data-param="analog_on">OFF</button>
                     </div>
                 </div>
-                <div class="engine-controls">
-                    <div class="knob-group">
-                        <select class="sound-select" data-param="analog_osc1_wave">
-                            <option value="0">Saw</option>
-                            <option value="1">Square</option>
-                            <option value="2">Pulse</option>
-                            <option value="3">Triangle</option>
-                        </select>
-                        <label>Wave</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-param="analog_detune" data-min="-100" data-max="100" data-value="5">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Detune</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-param="analog_filter_cutoff" data-min="20" data-max="20000" data-value="8000">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Filter</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-param="analog_filter_reso" data-min="0" data-max="1" data-value="0.2">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Reso</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob" data-param="analog_level" data-min="0" data-max="1" data-value="0.7">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>Level</label>
-                    </div>
-                </div>
+                <div class="engine-controls" id="analog-sliders"></div>
             </div>
         </section>
 
@@ -500,32 +421,7 @@
         <section class="bottom-controls">
             <div class="envelope-section">
                 <h3>ENVELOPE</h3>
-                <div class="env-knobs">
-                    <div class="knob-group">
-                        <div class="knob small" data-param="amp_attack" data-min="0.001" data-max="5" data-value="0.01">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>A</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob small" data-param="amp_decay" data-min="0.001" data-max="5" data-value="0.2">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>D</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob small" data-param="amp_sustain" data-min="0" data-max="1" data-value="0.7">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>S</label>
-                    </div>
-                    <div class="knob-group">
-                        <div class="knob small" data-param="amp_release" data-min="0.001" data-max="5" data-value="0.3">
-                            <div class="knob-pointer"></div>
-                        </div>
-                        <label>R</label>
-                    </div>
-                </div>
+                <div class="env-sliders" id="envelope-sliders"></div>
             </div>
             
             <div class="master-section">
@@ -550,12 +446,7 @@
                     <div class="vu-label">VU</div>
                 </div>
                 
-                <div class="knob-group">
-                    <div class="knob" data-param="master_volume" data-min="0" data-max="1" data-value="0.8">
-                        <div class="knob-pointer"></div>
-                    </div>
-                    <label>MASTER</label>
-                </div>
+                <div class="master-slider" id="master-slider"></div>
             </div>
         </section>
         
@@ -690,6 +581,7 @@
     
     <script src="presets.js"></script>
     <script src="vintage-keyboard.js"></script>
+    <script src="vintage-slider.js"></script>
     <script type="module">
         import * as patch from "./cmaj_CINTA.js"
         
@@ -934,10 +826,53 @@
                 console.log('🎨 Initializing vintage UI...');
                 initializeVintageUI();
                 
+                console.log('🎚️ Initializing vintage sliders...');
+                initializeVintageSliders();
+                
                 console.log('✅ CINTA ready!');
             };
             
             document.getElementById("cmaj-click-to-start").style.opacity = 1.0;
+        }
+        
+        function initializeVintageSliders() {
+            // FM Engine sliders - brass/gold
+            createSliderGroup(document.getElementById('fm-sliders'), [
+                { param: 'fm_ratio', label: 'RATIO', min: 0.5, max: 16, value: 2, unit: '', color: 'gold', decimals: 1 },
+                { param: 'fm_depth', label: 'DEPTH', min: 0, max: 1, value: 0.5, unit: '', color: 'gold', decimals: 2 },
+                { param: 'fm_feedback', label: 'FEEDBACK', min: 0, max: 1, value: 0, unit: '', color: 'gold', decimals: 2 },
+                { param: 'fm_level', label: 'LEVEL', min: 0, max: 1, value: 0.7, unit: '', color: 'gold', decimals: 2 }
+            ], patchConnection);
+            
+            // Tape Engine sliders - brass/gold
+            createSliderGroup(document.getElementById('tape-sliders'), [
+                { param: 'tape_wow', label: 'WOW', min: 0, max: 1, value: 0.2, unit: '', color: 'gold', decimals: 2 },
+                { param: 'tape_flutter', label: 'FLUTTER', min: 0, max: 1, value: 0.1, unit: '', color: 'gold', decimals: 2 },
+                { param: 'tape_level', label: 'LEVEL', min: 0, max: 1, value: 0.7, unit: '', color: 'gold', decimals: 2 }
+            ], patchConnection);
+            
+            // Analog Engine sliders - brass/gold
+            createSliderGroup(document.getElementById('analog-sliders'), [
+                { param: 'analog_detune', label: 'DETUNE', min: -100, max: 100, value: 5, unit: '', color: 'gold', decimals: 0 },
+                { param: 'analog_filter_cutoff', label: 'CUTOFF', min: 20, max: 20000, value: 8000, unit: 'Hz', color: 'gold', decimals: 0 },
+                { param: 'analog_filter_reso', label: 'RESO', min: 0, max: 1, value: 0.2, unit: '', color: 'gold', decimals: 2 },
+                { param: 'analog_level', label: 'LEVEL', min: 0, max: 1, value: 0.7, unit: '', color: 'gold', decimals: 2 }
+            ], patchConnection);
+            
+            // Envelope sliders (ADSR) - brass/gold
+            createSliderGroup(document.getElementById('envelope-sliders'), [
+                { param: 'amp_attack', label: 'ATTACK', min: 0.001, max: 5, value: 0.01, unit: 's', color: 'gold', decimals: 3 },
+                { param: 'amp_decay', label: 'DECAY', min: 0.001, max: 5, value: 0.2, unit: 's', color: 'gold', decimals: 2 },
+                { param: 'amp_sustain', label: 'SUSTAIN', min: 0, max: 1, value: 0.7, unit: '', color: 'gold', decimals: 2 },
+                { param: 'amp_release', label: 'RELEASE', min: 0.001, max: 5, value: 0.3, unit: 's', color: 'gold', decimals: 2 }
+            ], patchConnection);
+            
+            // Master volume slider - brass/gold
+            createSliderGroup(document.getElementById('master-slider'), [
+                { param: 'master_volume', label: 'MASTER', min: 0, max: 1, value: 0.8, unit: '', color: 'gold', decimals: 2 }
+            ], patchConnection);
+            
+            console.log('✅ Vintage sliders initialized for FM, Tape, Analog, Envelope, and Master (brass/gold aesthetic)');
         }
         
         function initializeVintageUI() {
