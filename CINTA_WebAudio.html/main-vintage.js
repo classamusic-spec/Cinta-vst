@@ -81,6 +81,23 @@ class Knob {
         if (patchConnection) {
             try {
                 patchConnection.sendEventOrValue(this.param, this.value);
+                
+                // Macro knob mappings - control FM engine parameters
+                if (this.param === 'vibe') {
+                    patchConnection.sendEventOrValue('fm_depth', this.value);
+                }
+                else if (this.param === 'warmth') {
+                    patchConnection.sendEventOrValue('fm_ratio', 0.5 + this.value * 8);
+                }
+                else if (this.param === 'space') {
+                    patchConnection.sendEventOrValue('fm_level', this.value);
+                }
+                else if (this.param === 'movement') {
+                    patchConnection.sendEventOrValue('fm_feedback', this.value);
+                }
+                else if (this.param === 'grit') {
+                    patchConnection.sendEventOrValue('master_volume', 0.5 + this.value * 0.5);
+                }
             } catch (error) {
                 console.error(`Failed to send ${this.param}:`, error);
             }
@@ -100,6 +117,14 @@ class Knob {
                 }
             });
         }
+        
+        // Update knob-value display
+        const knobValue = this.element.parentElement.querySelector('.knob-value');
+        if (knobValue) {
+            const normalized = (this.value - this.min) / (this.max - this.min);
+            const displayValue = Math.round(normalized * 100);
+            knobValue.textContent = displayValue;
+        }
     }
 }
 
@@ -111,7 +136,9 @@ class ToggleButton {
     constructor(element) {
         this.element = element;
         this.param = element.dataset.param;
+        this.knobParam = element.dataset.knobParam; // For texture rack toggles
         this.isActive = element.classList.contains('active');
+        this.savedValue = 0.3; // Default value when turning on
         
         this.element.addEventListener('click', this.toggle.bind(this));
         
@@ -147,8 +174,22 @@ class ToggleButton {
     sendToEngine() {
         if (patchConnection) {
             try {
-                const value = this.isActive ? 1.0 : 0.0;
-                patchConnection.sendEventOrValue(this.param, value);
+                // For texture rack toggles, control the knob parameter
+                if (this.knobParam) {
+                    // Get the knob element
+                    const knob = this.element.parentElement.querySelector(`[data-param="${this.knobParam}"]`);
+                    if (knob) {
+                        const knobValue = parseFloat(knob.dataset.value) || 0.3;
+                        this.savedValue = knobValue;
+                    }
+                    // Send 0 when OFF, saved value when ON
+                    const value = this.isActive ? this.savedValue : 0.0;
+                    patchConnection.sendEventOrValue(this.param, value);
+                } else {
+                    // Regular toggle (ON/OFF engines)
+                    const value = this.isActive ? 1.0 : 0.0;
+                    patchConnection.sendEventOrValue(this.param, value);
+                }
             } catch (error) {
                 console.error(`Failed to send ${this.param}:`, error);
             }
@@ -441,6 +482,7 @@ function initializeUI() {
         console.log('CINTA: Enabling FM engine...');
         patchConnection.sendEventOrValue('fm_on', 1.0);
         patchConnection.sendEventOrValue('fm_level', 0.7);
+        
         patchConnection.sendEventOrValue('master_volume', 0.8);
         
         console.log('CINTA: Sending initial parameter values...');
